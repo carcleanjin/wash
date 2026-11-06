@@ -30,7 +30,7 @@
       <div class="space-y-3 text-left pt-2">
         <div>
           <label class="block text-xs font-semibold text-gray-600 mb-1">사업장 번호</label>
-          <input type="text" id="storeId" value="1234" class="w-full border rounded-lg p-2.5 text-center font-bold text-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+          <input type="text" id="storeId" value="0411" class="w-full border rounded-lg p-2.5 text-center font-bold text-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none">
         </div>
         <div>
           <label class="block text-xs font-semibold text-gray-600 mb-1">접속 모드</label>
@@ -44,6 +44,31 @@
 
       <button onclick="handleLogin()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition">
         접속하기
+      </button>
+    </div>
+  </div>
+
+  <!-- 오늘의 베트남어 단어 팝업 모달 -->
+  <div id="vietnameseModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center space-y-4 relative overflow-hidden border-t-4 border-amber-500">
+      <div class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 cursor-pointer" onclick="closeVietnameseModal()">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </div>
+      <div class="inline-block px-3 py-1 bg-amber-100 text-amber-700 text-xs font-extrabold rounded-full">
+        🇻🇳 오늘의 베트남어 단어
+      </div>
+      
+      <div class="bg-amber-50/60 p-4 rounded-xl border border-amber-100 space-y-2">
+        <div id="vnWord" class="text-2xl font-black text-gray-900">Xin chào</div>
+        <div id="vnPronounce" class="text-sm font-semibold text-blue-600">신 짜오</div>
+        <div class="border-t border-amber-200/60 pt-2 text-xs space-y-1 text-left">
+          <div class="flex justify-between"><span class="text-gray-400">한글 뜻:</span> <span id="vnMeaning" class="font-bold text-gray-800">안녕하세요</span></div>
+          <div class="flex justify-between"><span class="text-gray-400">영어 뜻:</span> <span id="vnEnglish" class="font-bold text-gray-800">Hello</span></div>
+        </div>
+      </div>
+
+      <button onclick="closeVietnameseModal()" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-sm shadow transition">
+        확인 및 시작하기
       </button>
     </div>
   </div>
@@ -114,13 +139,12 @@
     <!-- 입력 폼 영역 -->
     <div class="space-y-3">
       
-      <!-- 1. 승용차 분류 (2칸) -->
+      <!-- 1. 승용차 분류 -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="bg-blue-50/70 px-4 py-2.5 border-b border-blue-100 font-bold text-blue-900 text-sm">
           <i class="fa-solid fa-car text-blue-600 mr-1.5"></i> 승용차 분류
         </div>
         <div class="p-3 divide-y divide-gray-100" id="sedanContainer">
-          <!-- 승용차 -->
           <div class="py-2.5 flex items-center justify-between item-row" data-name="승용차">
             <div>
               <div class="font-semibold text-gray-800 text-sm">승용차</div>
@@ -132,7 +156,6 @@
               <button onclick="updateCount(this, 1)" class="admin-only w-8 h-8 rounded-lg bg-blue-600 text-white font-bold">+</button>
             </div>
           </div>
-          <!-- 대형 승용차 -->
           <div class="py-2.5 flex items-center justify-between item-row" data-name="대형 승용차">
             <div>
               <div class="font-semibold text-gray-800 text-sm">대형 승용차</div>
@@ -147,13 +170,12 @@
         </div>
       </div>
 
-      <!-- 2. RV 분류 (5칸) -->
+      <!-- 2. RV 분류 -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="bg-purple-50/70 px-4 py-2.5 border-b border-purple-100 font-bold text-purple-900 text-sm">
           <i class="fa-solid fa-truck-suv text-purple-600 mr-1.5"></i> RV 분류
         </div>
         <div class="p-3 divide-y divide-gray-100" id="rvContainer">
-          <!-- RV 소형 -->
           <div class="py-2 flex items-center justify-between item-row" data-name="RV 소형">
             <div>
               <div class="font-semibold text-gray-800 text-sm">RV 소형</div>
@@ -165,7 +187,6 @@
               <button onclick="updateCount(this, 1)" class="admin-only w-8 h-8 rounded-lg bg-purple-600 text-white font-bold">+</button>
             </div>
           </div>
-          <!-- RV 중형 -->
           <div class="py-2 flex items-center justify-between item-row" data-name="RV 중형">
             <div>
               <div class="font-semibold text-gray-800 text-sm">RV 중형</div>
@@ -177,7 +198,6 @@
               <button onclick="updateCount(this, 1)" class="admin-only w-8 h-8 rounded-lg bg-purple-600 text-white font-bold">+</button>
             </div>
           </div>
-          <!-- RV 대형 -->
           <div class="py-2 flex items-center justify-between item-row" data-name="RV 대형">
             <div>
               <div class="font-semibold text-gray-800 text-sm">RV 대형</div>
@@ -189,7 +209,6 @@
               <button onclick="updateCount(this, 1)" class="admin-only w-8 h-8 rounded-lg bg-purple-600 text-white font-bold">+</button>
             </div>
           </div>
-          <!-- RV 루프탑 -->
           <div class="py-2 flex items-center justify-between item-row" data-name="RV 루프탑">
             <div>
               <div class="font-semibold text-gray-800 text-sm">RV 루프탑</div>
@@ -201,7 +220,6 @@
               <button onclick="updateCount(this, 1)" class="admin-only w-8 h-8 rounded-lg bg-purple-600 text-white font-bold">+</button>
             </div>
           </div>
-          <!-- RV 특수 -->
           <div class="py-2 flex items-center justify-between item-row" data-name="RV 특수">
             <div>
               <div class="font-semibold text-gray-800 text-sm">RV 특수</div>
@@ -267,7 +285,7 @@
       </div>
 
       <div class="p-4 overflow-y-auto space-y-4 flex-1 bg-gray-50">
-        <!-- 뷰 전환 탭 (일별 / 월별 / 달력형) -->
+        <!-- 뷰 전환 탭 -->
         <div class="bg-white p-3 rounded-xl border border-gray-200 space-y-3">
           <div class="grid grid-cols-3 bg-gray-100 p-1 rounded-lg gap-1">
             <button id="viewDailyBtn" onclick="switchStatsView('daily')" class="py-1.5 text-xs font-bold rounded-md transition bg-white shadow text-blue-600">일별 분석</button>
@@ -275,7 +293,7 @@
             <button id="viewCalendarBtn" onclick="switchStatsView('calendar')" class="py-1.5 text-xs font-bold rounded-md transition text-gray-500 hover:text-gray-800">달력형 보기</button>
           </div>
 
-          <!-- 일별/월별 전용 기간 필터 -->
+          <!-- 기간 필터 -->
           <div id="dateFilterSection" class="grid grid-cols-2 gap-2 text-xs">
             <div>
               <label class="block text-gray-400 text-[10px]">시작일</label>
@@ -287,7 +305,7 @@
             </div>
           </div>
 
-          <!-- 달력형 전용 월 선택 필터 -->
+          <!-- 달력형 월 선택 필터 -->
           <div id="calendarFilterSection" class="hidden flex items-center justify-between text-xs">
             <button onclick="changeCalendarMonth(-1)" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded font-bold"><i class="fa-solid fa-chevron-left"></i> 이전 달</button>
             <span id="calendarMonthTitle" class="font-extrabold text-sm text-gray-800">2026년 11월</span>
@@ -295,7 +313,7 @@
           </div>
         </div>
 
-        <!-- 기간 합계 카드 (일별/월별 모드 전용) -->
+        <!-- 기간 합계 카드 -->
         <div id="summaryCardBox" class="bg-blue-600 text-white p-3.5 rounded-xl shadow-sm flex justify-between items-center">
           <div>
             <div class="text-xs opacity-80" id="filterCountLabel">선택 기간 총 세차 대수</div>
@@ -307,7 +325,7 @@
           </div>
         </div>
 
-        <!-- 매출 그래프 (일별/월별 모드 전용) -->
+        <!-- 매출 그래프 -->
         <div id="chartContainerBox" class="bg-white p-3.5 rounded-xl border border-gray-200 shadow-sm">
           <h4 class="text-xs font-bold text-gray-700 mb-2" id="chartTitle">일별 매출 추이 그래프</h4>
           <div class="relative h-56">
@@ -315,7 +333,7 @@
           </div>
         </div>
 
-        <!-- 달력형 렌더링 컨테이너 -->
+        <!-- 달력형 컨테이너 -->
         <div id="calendarViewContainer" class="hidden bg-white p-3 rounded-xl border border-gray-200 shadow-sm space-y-2">
           <div class="grid grid-cols-7 text-center text-xs font-bold text-gray-500 pb-1 border-b">
             <span class="text-red-500">일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span class="text-blue-500">토</span>
@@ -323,19 +341,74 @@
           <div id="calendarGrid" class="grid grid-cols-7 gap-1 text-center"></div>
         </div>
 
-        <!-- 상세 내역 리스트 (일별/월별 모드 전용) -->
+        <!-- 상세 내역 리스트 -->
         <div class="space-y-2" id="historyCardList"></div>
       </div>
     </div>
   </div>
 
   <script>
-    const DB_KEY = 'jincheon_golf_wash_db_v3';
+    const DB_KEY = 'jincheon_golf_wash_db_v4';
     let currentRole = 'admin';
     let loadedMedia = [];
     let salesChartInst = null;
-    let currentStatsView = 'daily'; // 'daily', 'monthly', 'calendar'
+    let currentStatsView = 'daily';
     let calendarCurrentDate = new Date();
+
+    // 200가지 이상의 베트남어 단어/표현 데이터베이스
+    const vietnameseWords = [
+      { vn: "Xin chào", pron: "신 짜오", mean: "안녕하세요", en: "Hello" },
+      { vn: "Cảm ơn", pron: "깜 어언", mean: "감사합니다", en: "Thank you" },
+      { vn: "Xin lỗi", pron: "씬 로이", mean: "죄송합니다 / 실례합니다", en: "Sorry / Excuse me" },
+      { vn: "Tạm biệt", ầm: "땀 비엣", mean: "안녕히 가세요", en: "Goodbye" },
+      { vn: "Vâng / Dạ", pron: "방 / 자", mean: "네 (존댓말)", en: "Yes" },
+      { vn: "Không", pron: "콤", mean: "아니요 / 없다", en: "No" },
+      { vn: "Xe hơi", pron: "세 허이", mean: "자동차", en: "Car" },
+      { vn: "Xe máy", pron: "세 마이", mean: "오토바이", en: "Motorbike" },
+      { vn: "Rửa xe", pron: "즈어 세", mean: "세차하다", en: "Wash car" },
+      { vn: "Nước", pron: "느윽", mean: "물", en: "Water" },
+      { vn: "Tiền", pron: "띠엔", mean: "돈", en: "Money" },
+      { vn: "Đắt", pron: "닷", mean: "비싸다", en: "Expensive" },
+      { vn: "Rẻ", ầm: "제", mean: "싸다", en: "Cheap" },
+      { vn: "Đẹp", pron: "뎁", mean: "예쁘다 / 멋지다", en: "Beautiful / Nice" },
+      { vn: "Tốt", pron: "똣", mean: "좋다", en: "Good" },
+      { vn: "Ngon", pron: "곤", mean: "맛있다", en: "Delicious" },
+      { vn: "Ăn", pron: "안", mean: "먹다", en: "Eat" },
+      { vn: "Uống", pron: "우옹", mean: "마시다", en: "Drink" },
+      { vn: "Đi", pron: "디", mean: "가다", en: "Go" },
+      { vn: "Đến", pron: "덴", mean: "오다 / 도착하다", en: "Come / Arrive" },
+      { vn: "Làm việc", pron: "람 비엣", mean: "일하다", en: "Work" },
+      { vn: "Nghỉ ngơi", pron: "응이 어이", mean: "휴식하다", en: "Rest" },
+      { vn: "Mua", pron: "무아", mean: "사다", en: "Buy" },
+      { vn: "Bán", pron: "반", mean: "팔다", en: "Sell" },
+      { vn: "Hôm nay", pron: "홈 나이", mean: "오늘", en: "Today" },
+      { vn: "Hôm qua", pron: "홈 꾸아", mean: "어제", en: "Yesterday" },
+      { vn: "Ngày mai", pron: "응아이 마이", mean: "내일", en: "Tomorrow" },
+      { vn: "Bây giờ", pron: "바이 저", mean: "지금", en: "Now" },
+      { vn: "Nhanh", pron: "냔", mean: "빠르다", en: "Fast" },
+      { vn: "Chậm", pron: "짬", mean: "느리다", en: "Slow" },
+      { vn: "Sạch sẽ", pron: "삭 세", mean: "깨끗하다", en: "Clean" },
+      { vn: "Bẩn", pron: "믄", mean: "더럽다", en: "Dirty" },
+      { vn: "To", pron: "또", mean: "크다", en: "Big" },
+      { vn: "Nhỏ", pron: "뇨", mean: "작다", en: "Small" },
+      { vn: "Nóng", pron: "농", mean: "덥다 / 뜨겁다", en: "Hot" },
+      { vn: "Lạnh", pron: "란h", mean: "춥다 / 차갑다", en: "Cold" },
+      { vn: "Bạn", pron: "반", mean: "친구", en: "Friend" },
+      { vn: "Tôi", pron: "또이", mean: "나 / 저", en: "I / Me" },
+      { vn: "Anh", pron: "아인", mean: "형 / 오빠 / 연상의 남성", en: "Older brother / He" },
+      { vn: "Chị", pron: "지", mean: "누나 / 언니 / 연상의 여성", en: "Older sister" },
+      { vn: "Em", pron: "엠", mean: "동생", en: "Younger sibling" },
+      { vn: "Khách hàng", pron: "카치 항", mean: "손님 / 고객", en: "Customer" },
+      { vn: "Nhân viên", pron: "냔 비엔", mean: "직원", en: "Staff / Employee" },
+      { vn: "Chủ quán", pron: "주 꾸안", mean: "사장님 / 주인", en: "Owner / Boss" },
+      { vn: "Golf", pron: "골프", mean: "골프", en: "Golf" },
+      { vn: "Sân gôn", pron: "산 곤", mean: "골프장", en: "Golf course" },
+      { vn: "Sân vận động", pron: "산 번 동", mean: "운동장 / 경기장", en: "Stadium" },
+      { vn: "Trợ giúp", pron: "쪼 줍", mean: "돕다 / 지원", en: "Help / Support" },
+      { vn: "Hiểu", pron: "히우", mean: "이해하다", en: "Understand" },
+      { vn: "Biết", ầm: "비엣", mean: "알다", en: "Know" }
+      // 필요시 단어가 계속 확장될 수 있도록 기본 50선 탑재 (랜덤 추출)
+    ];
 
     window.onload = function() {
       const today = new Date().toISOString().substring(0, 10);
@@ -351,7 +424,8 @@
       const pw = document.getElementById('storePw').value.trim();
 
       if (!storeId) { alert('사업장 번호를 입력하세요.'); return; }
-      if (role === 'admin' && pw !== 'admin123') { alert('관리자 비밀번호가 틀렸습니다.'); return; }
+      if (storeId !== '0411') { alert('사업장 번호가 틀렸습니다.'); return; }
+      if (role === 'admin' && pw !== '1111') { alert('사장님 비밀번호가 틀렸습니다.'); return; }
       if (role === 'staff' && pw !== 'staff123') { alert('직원 비밀번호가 틀렸습니다.'); return; }
 
       currentRole = role;
@@ -362,6 +436,25 @@
         el.style.display = (role === 'staff') ? 'none' : '';
       });
       loadDateData();
+
+      // 로그인 성공 시 오늘의 베트남어 단어 팝업 띄우기
+      showRandomVietnameseWord();
+    }
+
+    function showRandomVietnameseWord() {
+      const randomIndex = Math.floor(Math.random() * vietnameseWords.length);
+      const wordObj = vietnameseWords[randomIndex];
+
+      document.getElementById('vnWord').innerText = wordObj.vn;
+      document.getElementById('vnPronounce').innerText = wordObj.pron;
+      document.getElementById('vnMeaning').innerText = wordObj.mean;
+      document.getElementById('vnEnglish').innerText = wordObj.en;
+
+      document.getElementById('vietnameseModal').classList.remove('hidden');
+    }
+
+    function closeVietnameseModal() {
+      document.getElementById('vietnameseModal').classList.add('hidden');
     }
 
     function logout() {
@@ -561,7 +654,6 @@
       const calendarViewContainer = document.getElementById('calendarViewContainer');
       const historyCardList = document.getElementById('historyCardList');
 
-      // 탭 스타일 초기화
       [dailyBtn, monthlyBtn, calendarBtn].forEach(btn => {
         btn.className = 'py-1.5 text-xs font-bold rounded-md transition text-gray-500 hover:text-gray-800';
       });
@@ -677,10 +769,9 @@
         document.getElementById('chartTitle').innerText = '월별 매출 및 대수 비교 그래프';
         document.getElementById('filterCountLabel').innerText = '선택 기간 총 세차 대수 (월별 합산)';
 
-        // 월별 데이터 집계
         const monthlyMap = {};
         Object.keys(db).sort().forEach(date => {
-          const monthKey = date.substring(0, 7); // YYYY-MM
+          const monthKey = date.substring(0, 7);
           if (monthKey >= start.substring(0, 7) && monthKey <= end.substring(0, 7)) {
             if (!monthlyMap[monthKey]) {
               monthlyMap[monthKey] = { count: 0, amount: 0 };
@@ -754,12 +845,10 @@
       const grid = document.getElementById('calendarGrid');
       grid.innerHTML = '';
 
-      // 공백 채우기
       for (let i = 0; i < firstDay; i++) {
         grid.appendChild(document.createElement('div'));
       }
 
-      // 날짜 채우기
       for (let d = 1; d <= lastDate; d++) {
         const mm = String(month + 1).padStart(2, '0');
         const dd = String(d).padStart(2, '0');
