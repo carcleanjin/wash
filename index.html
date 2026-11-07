@@ -7,7 +7,7 @@
   <!-- Tailwind CSS & FontAwesome -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- SheetJS (Excel 저장 라이브러리) -->
+  <!-- SheetJS (Excel 읽기/쓰기 라이브러리) -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <!-- Chart.js (매출 그래프) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -83,12 +83,17 @@
       <div class="flex items-center space-x-1.5">
         <button onclick="openStatsModal()" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-lg border border-slate-700 text-slate-200 transition flex items-center gap-1">
           <i class="fa-solid fa-chart-line text-blue-400"></i>
-          <span>조회/정리</span>
+          <span>조회</span>
         </button>
         <button onclick="exportToExcel()" class="px-2.5 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold rounded-lg text-white transition flex items-center gap-1 shadow-sm">
           <i class="fa-solid fa-file-excel"></i>
           <span>엑셀 저장</span>
         </button>
+        <label class="px-2.5 py-1.5 bg-amber-600 hover:bg-amber-500 text-xs font-semibold rounded-lg text-white transition flex items-center gap-1 shadow-sm cursor-pointer">
+          <i class="fa-solid fa-file-arrow-up"></i>
+          <span>엑셀 업로드</span>
+          <input type="file" accept=".xlsx, .xls, .csv" class="hidden" onchange="importFromExcel(event)">
+        </label>
       </div>
     </div>
   </header>
@@ -273,7 +278,7 @@
     </button>
   </main>
 
-  <!-- 조회/정리 및 분석 모달 -->
+  <!-- 조회 및 분석 모달 -->
   <div id="statsModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl max-h-[90vh] flex flex-col overflow-hidden">
       <div class="p-4 bg-slate-900 text-white flex justify-between items-center">
@@ -708,22 +713,16 @@
           }
 
           const cell = document.createElement('div');
-          cell.className = `p-1.5 rounded-lg border text-left flex flex-col justify-between h-20 text-[10px] ${dayInfo ? 'bg-blue-50/60 border-blue-200' : 'bg-white border-gray-100'}`;
-          if (memoText) {
-            cell.title = `[메모] ${memoText}`;
-          }
+          cell.className = `p-1.5 rounded-lg border text-left flex flex-col justify-between h-22 text-[10px] ${dayInfo ? 'bg-blue-50/60 border-blue-200' : 'bg-white border-gray-100'}`;
 
           let memoHtml = '';
           if (memoText) {
-            memoHtml = `<div class="mt-0.5 text-[9px] text-amber-700 bg-amber-50 rounded px-1 py-0.5 border border-amber-200/60 truncate font-normal" title="${memoText}"><i class="fa-solid fa-comment-dots text-[8px] mr-0.5"></i>${memoText}</div>`;
+            memoHtml = `<div class="mt-0.5 text-[9px] text-amber-800 bg-amber-50 rounded px-1 py-0.5 border border-amber-200/60 truncate font-normal" title="${memoText}">${memoText}</div>`;
           }
 
           cell.innerHTML = `
             <div>
-              <div class="font-bold text-gray-700 flex justify-between items-center">
-                <span>${d}</span>
-                ${memoText ? '<i class="fa-solid fa-note-sticky text-amber-500 text-[9px]"></i>' : ''}
-              </div>
+              <div class="font-bold text-gray-700">${d}</div>
               ${memoHtml}
             </div>
             <div>
@@ -931,6 +930,100 @@
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "세차장매출");
       XLSX.writeFile(wb, `진천골프장_세차장_매출_${new Date().toISOString().split('T')[0]}.xlsx`);
+    }
+
+    function importFromExcel(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const jsonRows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+          const db = getStorageData();
+          let importedCount = 0;
+
+          // 첫 번째 행은 헤더이므로 1번 인덱스부터 순회
+          for (let i = 1; i < jsonRows.length; i++) {
+            const row = jsonRows[i];
+            if (!row || row.length === 0) continue;
+
+            const dateKey = String(row[0] || '').trim();
+            if (!dateKey || !dateKey.match(/^\d{4}-\d{2}-\d{2}$/)) continue;
+
+            const category = String(row[1] || ''); // 승용차 또는 RV
+            const itemName = String(row[2] || ''); // 세부 항목명 (예: 승용차, RV 소형 등)
+            const countPriceStr = String(row[3] || ''); // 예: "2대 (10,000원)"
+            const otherAmt = parseInt(row[5]) || 0;
+            const memoText = String(row[7] || '');
+
+            // 대수와 단가 파싱
+            let count = 0;
+            let price = 0;
+            const countMatch = countPriceStr.match(/(\d+)대/);
+            const priceMatch = countPriceStr.match(/\(([\d,]+)원\)/);
+            if (countMatch) count = parseInt(countMatch[1]) || 0;
+            if (priceMatch) price = parseInt(priceMatch[1].replace(/,/g, '')) || 0;
+
+            if (!db[dateKey]) {
+              db[dateKey] = { items: {}, other: otherAmt, memo: memoText, media: [], sedanCount: 0, rvCount: 0, totalCount: 0, totalAmount: 0 };
+            }
+
+            if (itemName) {
+              if (!db[dateKey].items[itemName]) {
+                db[dateKey].items[itemName] = { count: 0, price: price > 0 ? price : 10000 };
+              }
+              db[dateKey].items[itemName].count = count;
+              if (price > 0) db[dateKey].items[itemName].price = price;
+            }
+
+            if (otherAmt > 0) db[dateKey].other = otherAmt;
+            if (memoText) db[dateKey].memo = memoText;
+
+            importedCount++;
+          }
+
+          // 각 날짜별 총합 계산 갱신
+          Object.keys(db).forEach(dateKey => {
+            const info = db[dateKey];
+            let sedanCount = 0, sedanAmt = 0;
+            let rvCount = 0, rvAmt = 0;
+
+            if (info.items) {
+              Object.keys(info.items).forEach(k => {
+                const itm = info.items[k];
+                if (k.includes('승용')) {
+                  sedanCount += itm.count;
+                  sedanAmt += itm.count * itm.price;
+                }
+                if (k.includes('RV')) {
+                  rvCount += itm.count;
+                  rvAmt += itm.count * itm.price;
+                }
+              });
+            }
+            info.sedanCount = sedanCount;
+            info.rvCount = rvCount;
+            info.totalCount = sedanCount + rvCount;
+            info.totalAmount = sedanAmt + rvAmt + (info.other || 0);
+          });
+
+          setStorageData(db);
+          loadDateData();
+          alert('엑셀 데이터가 성공적으로 적용(복원)되었습니다!');
+        } catch (err) {
+          console.error(err);
+          alert('엑셀 파일을 읽는 중 오류가 발생했습니다. 올바른 형식의 파일인지 확인해 주세요.');
+        } finally {
+          event.target.value = ''; // 파일 input 초기화
+        }
+      };
+      reader.readAsArrayBuffer(file);
     }
 
     window.onload = initApp;
