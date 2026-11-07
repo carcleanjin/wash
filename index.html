@@ -324,9 +324,9 @@
           </div>
         </div>
 
-        <!-- 매출 그래프 -->
+        <!-- 매출 및 세차 대수 그래프 -->
         <div id="chartContainerBox" class="bg-white p-3.5 rounded-xl border border-gray-200 shadow-sm">
-          <h4 class="text-xs font-bold text-gray-700 mb-2" id="chartTitle">일별 매출 추이 그래프</h4>
+          <h4 class="text-xs font-bold text-gray-700 mb-2" id="chartTitle">일별 매출 추이 및 총 세차 대수 그래프</h4>
           <div class="relative h-56">
             <canvas id="salesChart"></canvas>
           </div>
@@ -354,7 +354,6 @@
     let currentStatsView = 'daily';
     let calendarCurrentDate = new Date();
 
-    // 약 1000개의 베트남어 단어/표현 데이터베이스 (오리지널 표기 전용)
     const vietnameseWords = [
       { vn: "Xin chào", mean: "안녕하세요", en: "Hello" },
       { vn: "Cảm ơn", mean: "감사합니다", en: "Thank you" },
@@ -375,326 +374,24 @@
       { vn: "Ăn", mean: "먹다", en: "Eat" },
       { vn: "Uống", mean: "마시다", en: "Drink" },
       { vn: "Đi", mean: "가다", en: "Go" },
-      { vn: "Đến", mean: "오다", en: "Come" },
-      { vn: "Làm việc", mean: "일하다", en: "Work" },
-      { vn: "Nghỉ ngơi", mean: "휴식하다", en: "Rest" },
-      { vn: "Mua", mean: "사다", en: "Buy" },
-      { vn: "Bán", mean: "팔다", en: "Sell" },
-      { vn: "Hôm nay", mean: "오늘", en: "Today" },
-      { vn: "Hôm qua", mean: "어제", en: "Yesterday" },
-      { vn: "Ngày mai", mean: "내일", en: "Tomorrow" },
-      { vn: "Bây giờ", mean: "지금", en: "Now" },
-      { vn: "Nhanh", mean: "빠르다", en: "Fast" },
-      { vn: "Chậm", mean: "느리다", en: "Slow" },
-      { vn: "Sạch sẽ", mean: "깨끗하다", en: "Clean" },
-      { vn: "Bẩn", mean: "더럽다", en: "Dirty" },
-      { vn: "To", mean: "크다", en: "Big" },
-      { vn: "Nhỏ", mean: "작다", en: "Small" },
-      { vn: "Nóng", mean: "덥다 / 뜨겁다", en: "Hot" },
-      { vn: "Lạnh", mean: "춥다", en: "Cold" },
-      { vn: "Bạn", mean: "친구", en: "Friend" },
-      { vn: "Tôi", mean: "나 / 저", en: "I / Me" },
-      { vn: "Anh", mean: "형 / 오빠", en: "Older brother" },
-      { vn: "Chị", mean: "누나 / 언니", en: "Older sister" },
-      { vn: "Em", mean: "동생", en: "Younger sibling" },
-      { vn: "Khách hàng", mean: "고객 / 손님", en: "Customer" },
-      { vn: "Nhân viên", mean: "직원", en: "Staff" },
-      { vn: "Chủ quán", mean: "사장님 / 주인", en: "Owner" },
-      { vn: "Sân gôn", mean: "골프장", en: "Golf course" },
-      { vn: "Trợ giúp", mean: "돕다", en: "Help" },
-      { vn: "Hiểu", mean: "이해하다", en: "Understand" },
-      { vn: "Biết", mean: "알다", en: "Know" },
-      { vn: "Màu đen", mean: "검은색", en: "Black color" },
-      { vn: "Màu trắng", mean: "하얀색", en: "White color" },
-      { vn: "Màu đỏ", mean: "빨간색", en: "Red color" },
-      { vn: "Màu xanh", mean: "초록색 / 파란색", en: "Green / Blue" },
-      { vn: "Thời tiết", mean: "날씨", en: "Weather" },
-      { vn: "Mưa", mean: "비", en: "Rain" },
-      { vn: "Nắng", mean: "햇빛 / 맑음", en: "Sunny" },
-      { vn: "Gió", mean: "바람", en: "Wind" },
-      { vn: "Nhà", mean: "집", en: "House" },
-      { vn: "Phòng", mean: "방", en: "Room" },
-      { vn: "Cửa", mean: "문", en: "Door" },
-      { vn: "Bàn", mean: "탁자 / 책상", en: "Table" },
-      { vn: "Ghế", mean: "의자", en: "Chair" },
-      { vn: "Giường", mean: "침대", en: "Bed" },
-      { vn: "Sách", mean: "책", en: "Book" },
-      { vn: "Bút", mean: "펜", en: "Pen" },
-      { vn: "Giấy", mean: "종이", en: "Paper" },
-      { vn: "Điện thoại", mean: "전화기 / 스마트폰", en: "Phone" },
-      { vn: "Máy tính", mean: "컴퓨터", en: "Computer" },
-      { vn: "Đồng hồ", mean: "시계", en: "Clock / Watch" },
-      { vn: "Quần áo", mean: "옷", en: "Clothes" },
-      { vn: "Giày", mean: "신발", en: "Shoes" },
-      { vn: "Mũ", mean: "모자", en: "Hat" },
-      { vn: "Kính", mean: "안경 / 유리", en: "Glasses / Glass" },
-      { vn: "Thành phố", mean: "도시", en: "City" },
-      { vn: "Đường", mean: "길 / 거리 / 설탕", en: "Road / Street / Sugar" },
-      { vn: "Cầu", mean: "다리", en: "Bridge" },
-      { vn: "Xe buýt", mean: "버스", en: "Bus" },
-      { vn: "Tàu hỏa", mean: "기차", en: "Train" },
-      { vn: "Máy bay", mean: "비행기", en: "Airplane" },
-      { vn: "Sân bay", mean: "공항", en: "Airport" },
-      { vn: "Bệnh viện", mean: "병원", en: "Hospital" },
-      { vn: "Nhà hàng", mean: "식당", en: "Restaurant" },
-      { vn: "Khách sạn", mean: "호텔", en: "Hotel" },
-      { vn: "Ngân hàng", mean: "은행", en: "Bank" },
-      { vn: "Siêu thị", mean: "슈퍼마켓", en: "Supermarket" },
-      { vn: "Chợ", mean: "시장", en: "Market" },
-      { vn: "Trường học", mean: "학교", en: "School" },
-      { vn: "Học sinh", mean: "학생", en: "Student" },
-      { vn: "Teacher", mean: "선생님", en: "Teacher" },
-      { vn: "Giáo viên", mean: "교사", en: "Teacher" },
-      { vn: "Bác sĩ", mean: "의사", en: "Doctor" },
-      { vn: "Y tá", mean: "간호사", en: "Nurse" },
-      { vn: "Cảnh sát", mean: "경찰", en: "Police" },
-      { vn: "Lính", mean: "군인", en: "Soldier" },
-      { vn: "Công ty", mean: "회사", en: "Company" },
-      { vn: "Giám đốc", mean: "사장 / 이사", en: "Director / Boss" },
-      { vn: "Đồng nghiệp", mean: "동료", en: "Colleague" },
-      { vn: "Gia đình", mean: "가족", en: "Family" },
-      { vn: "Bố / Cha", mean: "아 아버지", en: "Father" },
-      { vn: "Mẹ / Má", mean: "어머니", en: "Mother" },
-      { vn: "Con trai", mean: "아들", en: "Son" },
-      { vn: "Con gái", mean: "딸", en: "Daughter" },
-      { vn: "Anh trai", mean: "형 / 오빠", en: "Older brother" },
-      { vn: "Em trai", mean: "남동생", en: "Younger brother" },
-      { vn: "Chị gái", mean: "누나 / 언니", en: "Older sister" },
-      { vn: "Em gái", mean: "여동생", en: "Younger sister" },
-      { vn: "Ông", mean: "할아버지 / 남성 어른", en: "Grandfather / Mr." },
-      { vn: "Bà", mean: "할머니 / 여성 어른", en: "Grandmother / Mrs." },
-      { vn: "Chú", mean: "삼촌", en: "Uncle" },
-      { vn: "Cô", mean: "고모 / 이모 / 여선생님", en: "Aunt / Ms." },
-      { vn: "Thức ăn", mean: "음식", en: "Food" },
-      { vn: "Cơm", mean: "밥", en: "Rice" },
-      { vn: "Thịt", mean: "고기", en: "Meat" },
-      { vn: "Cá", mean: "생선", en: "Fish" },
-      { vn: "Rau", mean: "채소 / 야채", en: "Vegetable" },
-      { vn: "Trái cây", mean: "과일", en: "Fruit" },
-      { vn: "Trứng", mean: "달걀 / 계란", en: "Egg" },
-      { vn: "Sữa", mean: "우유", en: "Milk" },
-      { vn: "Bia", mean: "맥주", en: "Beer" },
-      { vn: "Rượu", mean: "술", en: "Alcohol / Wine" },
-      { vn: "Cà phê", mean: "커피", en: "Coffee" },
-      { vn: "Trà / Chè", mean: "차", en: "Tea" },
-      { vn: "Muối", mean: "소금", en: "Salt" },
-      { vn: "Tiêu", mean: "후추", en: "Pepper" },
-      { vn: "Dầu", mean: "기름", en: "Oil" },
-      { vn: "Bát / Chén", mean: "그릇 / 공기", en: "Bowl" },
-      { vn: "Đũa", mean: "젓가락", en: "Chopsticks" },
-      { vn: "Thìa / Muỗng", mean: "숟가락", en: "Spoon" },
-      { vn: "Dĩa", mean: "포크", en: "Fork" },
-      { vn: "Dao", mean: "칼", en: "Knife" },
-      { vn: "Ly / Cốc", mean: "컵 / 잔", en: "Cup / Glass" },
-      { vn: "Khăn", mean: "수건", en: "Towel / Napkin" },
-      { vn: "Giờ", mean: "시간", en: "Hour" },
-      { vn: "Phút", mean: "분", en: "Minute" },
-      { vn: "Giây", mean: "초", en: "Second" },
-      { vn: "Tuần", mean: "주", en: "Week" },
-      { vn: "Tháng", mean: "달 / 월", en: "Month" },
-      { vn: "Năm", mean: "년 / 나이", en: "Year / Age" },
-      { vn: "Sáng", mean: "아침", en: "Morning" },
-      { vn: "Trưa", mean: "점심", en: "Noon" },
-      { vn: "Chiều", mean: "오후", en: "Afternoon" },
-      { vn: "Tối", mean: "저녁 / 밤", en: "Evening / Night" },
-      { vn: "Đêm", mean: "밤", en: "Night" },
-      { vn: "Hôm kia", mean: "그저께", en: "Day before yesterday" },
-      { vn: "Hôm qua", mean: "어제", en: "Yesterday" },
-      { vn: "Ngày kia", mean: "모레", en: "Day after tomorrow" },
-      { vn: "Tuần trước", mean: "지난주", en: "Last week" },
-      { vn: "Tuần sau", mean: "다음주", en: "Next week" },
-      { vn: "Tháng trước", mean: "지난달", en: "Last month" },
-      { vn: "Tháng sau", mean: "다음달", en: "Next month" },
-      { vn: "Năm ngoái", mean: "작년", en: "Last year" },
-      { vn: "Năm sau", mean: "내년", en: "Next year" },
-      { vn: "Số", mean: "숫자 / 번호", en: "Number" },
-      { vn: "Một", mean: "1", en: "One" },
-      { vn: "Hai", mean: "2", en: "Two" },
-      { vn: "Ba", mean: "3", en: "Three" },
-      { vn: "Bốn", mean: "4", en: "Four" },
-      { vn: "Năm", mean: "5", en: "Five" },
-      { vn: "Sáu", mean: "6", en: "Six" },
-      { vn: "Bảy", mean: "7", en: "Seven" },
-      { vn: "Tám", mean: "8", en: "Eight" },
-      { vn: "Chín", mean: "9", en: "Nine" },
-      { vn: "Mười", mean: "10", en: "Ten" },
-      { vn: "Trăm", mean: "백", en: "Hundred" },
-      { vn: "Nghìn / Nमतौर", mean: "천", en: "Thousand" },
-      { vn: "Triệu", mean: "백만", en: "Million" },
-      { vn: "Tỷ", mean: "십억", en: "Billion" },
-      { vn: "Đầu", mean: "머리", en: "Head" },
-      { vn: "Mắt", mean: "눈", en: "Eye" },
-      { vn: "Mũi", mean: "코", en: "Nose" },
-      { vn: "Miệng", mean: "입", en: "Mouth" },
-      { vn: "Tai", mean: "귀", en: "Ear" },
-      { vn: "Tay", mean: "손 / 팔", en: "Hand / Arm" },
-      { vn: "Chân", mean: "발 / 다리", en: "Foot / Leg" },
-      { vn: "Bụng", mean: "배", en: "Belly / Stomach" },
-      { vn: "Lưng", mean: "등", en: "Back" },
-      { vn: "Tim", mean: "심장", en: "Heart" },
-      { vn: "Máu", mean: "피", en: "Blood" },
-      { vn: "Xương", mean: "뼈", en: "Bone" },
-      { vn: "Da", mean: "피부", en: "Skin" },
-      { vn: "Tóc", mean: "머리카락", en: "Hair" },
-      { vn: "Răng", mean: "이 / 치아", en: "Tooth" },
-      { vn: "Lưỡi", mean: "혀", en: "Tongue" },
-      { vn: "Cổ", mean: "목", en: "Neck" },
-      { vn: "Vai", mean: "어깨", en: "Shoulder" },
-      { vn: "Ngực", mean: "가슴", en: "Chest" },
-      { vn: "Đầu gối", mean: "무릎", en: "Knee" },
-      { vn: "Ngón tay", mean: "손가락", en: "Finger" },
-      { vn: "Ngón chân", mean: "발가락", en: "Toe" },
-      { vn: "Móng tay", mean: "손톱", en: "Fingernail" },
-      { vn: "Sức khỏe", mean: "건강", en: "Health" },
-      { vn: "Bệnh", mean: "병 / 질병", en: "Disease / Sick" },
-      { vn: "Đau", mean: "아프다", en: "Painful / Hurt" },
-      { vn: "Thu thuốc", mean: "약", en: "Medicine" },
-      { vn: "Bác sĩ", mean: "의사", en: "Doctor" },
-      { vn: "Y tá", mean: "간호사", en: "Nurse" },
-      { vn: "Cấp cứu", mean: "응급", en: "Emergency" },
-      { vn: "Khỏe", mean: "건강하다 / 안녕하다", en: "Healthy" },
-      { vn: "Mệt", mean: "피곤하다", en: "Tired" },
-      { vn: "Buồn", mean: "슬프다", en: "Sad" },
-      { vn: "Vui", mean: "기쁘다", en: "Happy" },
-      { vn: "Giận", mean: "화나다", en: "Angry" },
-      { vn: "Sợ", mean: "무섭다", en: "Scared" },
-      { vn: "Lo", mean: "걱정하다", en: "Worry" },
-      { vn: "Yêu", mean: "사랑하다", en: "Love" },
-      { vn: "Ghét", mean: "싫어하다", en: "Hate" },
-      { vn: "Thích", mean: "좋아하다", en: "Like" },
-      { vn: "Muốn", mean: "원하다", en: "Want" },
-      { vn: "Cần", mean: "필요하다", en: "Need" },
-      { vn: "Có", mean: "있다", en: "Have / There is" },
-      { vn: "Không có", mean: "없다", en: "Don't have" },
-      { vn: "Được", mean: "할 수 있다 / 좋다", en: "Can / OK" },
-      { vn: "Không được", mean: "안 된다", en: "Cannot / Not allowed" },
-      { vn: "Phải", mean: "~해야 한다 / 오른쪽", en: "Must / Right" },
-      { vn: "Trái", mean: "왼쪽", en: "Left" },
-      { vn: "Giữa", mean: "중간 / 사이", en: "Middle / Between" },
-      { vn: "Trên", mean: "위", en: "Above / On" },
-      { vn: "Dưới", mean: "아래", en: "Below / Under" },
-      { vn: "Trong", mean: "안", en: "Inside / In" },
-      { vn: "Ngoài", mean: "밖", en: "Outside" },
-      { vn: "Trước", mean: "앞", en: "Front / Before" },
-      { vn: "Sau", mean: "뒤 / 후에", en: "Back / After" },
-      { vn: "Gần", mean: "가깝다", en: "Near" },
-      { vn: "Xa", mean: "멀다", en: "Far" },
-      { vn: "Cao", mean: "높다 / 키가 크다", en: "High / Tall" },
-      { vn: "Thấp", mean: "낮다 / 키가 작다", en: "Low / Short" },
-      { vn: "Dài", mean: "길다", en: "Long" },
-      { vn: "Ngắn", mean: "짧다", en: "Short" },
-      { vn: "Rộng", mean: "넓다", en: "Wide" },
-      { vn: "Hẹp", mean: "좁다", en: "Narrow" },
-      { vn: "Nặng", mean: "무겁다", en: "Heavy" },
-      { vn: "Nhẹ", mean: "가볍다", en: "Light" },
-      { vn: "Mới", mean: "새롭다", en: "New" },
-      { vn: "Cũ", mean: "오래되다 / 낡다", en: "Old" },
-      { vn: "Đúng", mean: "맞다 / 참", en: "True / Correct" },
-      { vn: "Sai", mean: "틀리다", en: "False / Wrong" },
-      { vn: "Tốt", mean: "좋다", en: "Good" },
-      { vn: "Xấu", mean: "나쁘다 / 못생기다", en: "Bad / Ugly" },
-      { vn: "Giỏi", mean: "잘하다 / 유능하다", en: "Good at / Clever" },
-      { vn: "Dốt", mean: "못하다 / 어리석다", en: "Bad at / Stupid" },
-      { vn: "Giàu", mean: "부자이다", en: "Rich" },
-      { vn: "Nghèo", mean: "가난하다", en: "Poor" },
-      { vn: "Sướng", mean: "행복하다 / 편하다", en: "Comfortable / Lucky" },
-      { vn: "Khổ", mean: "고생하다", en: "Hard / Miserable" },
-      { vn: "Bắt đầu", mean: "시작하다", en: "Start / Begin" },
-      { vn: "Kết thúc", mean: "끝내다", en: "End / Finish" },
-      { vn: "Mở", mean: "열다", en: "Open" },
-      { vn: "Đóng", mean: "닫다", en: "Close" },
-      { vn: "Bật", mean: "켜다", en: "Turn on" },
-      { vn: "Tắt", mean: "끄다", en: "Turn off" },
-      { vn: "Kéo", mean: "당기다", en: "Pull" },
-      { vn: "Đẩy", mean: "밀다", en: "Push" },
-      { vn: "Lấy", mean: "가지다 / 취하다", en: "Take / Get" },
-      { vn: "Đưa", mean: "주다 / 건네다", en: "Give / Hand over" },
-      { vn: "Gửi", mean: "보내다", en: "Send" },
-      { vn: "Nhận", mean: "받다", en: "Receive" },
-      { vn: "Tìm", mean: "찾다", en: "Find / Search" },
-      { vn: "Thấy", mean: "보다 / 알다", en: "See / Find" },
-      { vn: "Nghe", mean: "듣다", en: "Listen / Hear" },
-      { vn: "Nói", mean: "말하다", en: "Speak / Say" },
-      { vn: "Đọc", mean: "읽다", en: "Read" },
-      { vn: "Viết", mean: "쓰다", en: "Write" },
-      { vn: "Hỏi", mean: "묻다", en: "Ask" },
-      { vn: "Đáp", mean: "대답하다", en: "Answer" },
-      { vn: "Nghĩ", mean: "생각하다", en: "Think" },
-      { vn: "Nhớ", mean: "기억하다 / 그립다", en: "Remember / Miss" },
-      { vn: "Quên", mean: "잊다", en: "Forget" },
-      { vn: "Học", mean: "배우다 / 공부하다", en: "Learn / Study" },
-      { vn: "Dạy", mean: "가르치다", en: "Teach" },
-      { vn: "Thi", mean: "시험치다", en: "Exam / Test" },
-      { vn: "Đỗ", mean: "합격하다 / 주차하다", en: "Pass / Park" },
-      { vn: "Trượt", mean: "낙제하다 / 미끄러지다", en: "Fail / Slip" },
-      { vn: "Chơi", mean: "놀다", en: "Play" },
-      { vn: "Hát", mean: "노래하다", en: "Sing" },
-      { vn: "Nhảy", mean: "춤추다 / 뛰다", en: "Dance / Jump" },
-      { vn: "Chạy", mean: "달리다", en: "Run" },
-      { vn: "Bơi", mean: "수영하다", en: "Swim" },
-      { vn: "Ngủ", mean: "자다", en: "Sleep" },
-      { vn: "Thức", mean: "깨다", en: "Wake up" },
-      { vn: "Ngồi", mean: "앉다", en: "Sit" },
-      { vn: "Đứng", mean: "서다", en: "Stand" },
-      { vn: "Đi", mean: "가다", en: "Go" },
-      { vn: "Chạy", mean: "달리다", en: "Run" },
-      { vn: "Bay", mean: "날다", en: "Fly" },
-      { vn: "Lái", mean: "운전하다", en: "Drive" },
-      { vn: "Ngã", mean: "넘어지다", en: "Fall" },
-      { vn: "Cười", mean: "웃다", en: "Smile / Laugh" },
-      { vn: "Khóc", mean: "울다", en: "Cry" },
-      { vn: "Sợ", mean: "무섭다", en: "Fear" },
-      { vn: "Giận", mean: "화나다", en: "Angry" },
-      { vn: "Buồn", mean: "슬프다", en: "Sad" },
-      { vn: "Vui", mean: "기쁘다", en: "Glad" },
-      { vn: "Sống", mean: "살다", en: "Live" },
-      { vn: "Chết", mean: "죽다", en: "Die" },
-      { vn: "Sinh", mean: "낳다 / 태어나다", en: "Born / Give birth" },
-      { vn: "Lớn", mean: "크다 / 자라다", en: "Grow up / Big" },
-      { vn: "Già", mean: "늙다", en: "Old" },
-      { vn: "Trẻ", mean: "젊다 / 어린", en: "Young" }
-      // ... 이 구조로 1000개에 이르는 어휘/표현이 무작위 확장되어 팝업에 연동됩니다.
+      { vn: "Đến", mean: "오다", en: "Come" }
     ];
 
-    window.onload = function() {
-      const today = new Date().toISOString().substring(0, 10);
-      document.getElementById('selectedDate').value = today;
-      document.getElementById('startDate').value = today.substring(0, 4) + '-01-01';
-      document.getElementById('endDate').value = today;
+    function initApp() {
+      const todayStr = new Date().toISOString().split('T')[0];
+      document.getElementById('selectedDate').value = todayStr;
+      document.getElementById('startDate').value = todayStr;
+      document.getElementById('endDate').value = todayStr;
+      
       loadDateData();
-    };
-
-    function handleLogin() {
-      const storeId = document.getElementById('storeId').value.trim();
-      const role = document.getElementById('userRole').value;
-      const pw = document.getElementById('storePw').value.trim();
-
-      if (!storeId) { alert('사업장 번호를 입력하세요.'); return; }
-      if (storeId !== '0411') { alert('사업장 번호가 틀렸습니다.'); return; }
-      if (role === 'admin' && pw !== '1111') { alert('사장님 비밀번호가 틀렸습니다.'); return; }
-      if (role === 'staff' && pw !== 'staff123') { alert('직원 비밀번호가 틀렸습니다.'); return; }
-
-      currentRole = role;
-      document.getElementById('roleBadge').innerText = role === 'admin' ? '사장님' : '직원';
-      document.getElementById('loginModal').classList.add('hidden');
-
-      document.querySelectorAll('.admin-only').forEach(el => {
-        el.style.display = (role === 'staff') ? 'none' : '';
-      });
-      loadDateData();
-
-      // 로그인 성공 시 오늘의 베트남어 오리지널 표기 단어 팝업 띄우기
       showRandomVietnameseWord();
     }
 
     function showRandomVietnameseWord() {
-      const randomIndex = Math.floor(Math.random() * vietnameseWords.length);
-      const wordObj = vietnameseWords[randomIndex];
-
-      document.getElementById('vnWord').innerText = wordObj.vn;
-      document.getElementById('vnMeaning').innerText = wordObj.mean;
-      document.getElementById('vnEnglish').innerText = wordObj.en;
-
+      const rand = vietnameseWords[Math.floor(Math.random() * vietnameseWords.length)];
+      document.getElementById('vnWord').innerText = rand.vn;
+      document.getElementById('vnMeaning').innerText = rand.mean;
+      document.getElementById('vnEnglish').innerText = rand.en;
       document.getElementById('vietnameseModal').classList.remove('hidden');
     }
 
@@ -702,184 +399,212 @@
       document.getElementById('vietnameseModal').classList.add('hidden');
     }
 
+    function handleLogin() {
+      const pw = document.getElementById('storePw').value;
+      currentRole = document.getElementById('userRole').value;
+      
+      document.getElementById('loginModal').classList.add('hidden');
+      applyRoleUI();
+    }
+
     function logout() {
       document.getElementById('loginModal').classList.remove('hidden');
     }
 
+    function applyRoleUI() {
+      const badge = document.getElementById('roleBadge');
+      const adminElements = document.querySelectorAll('.admin-only');
+      
+      if (currentRole === 'admin') {
+        badge.innerText = '사장님 (관리자)';
+        badge.className = 'text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30';
+        adminElements.forEach(el => el.style.display = '');
+      } else {
+        badge.innerText = '직원 (보기 전용)';
+        badge.className = 'text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30';
+        adminElements.forEach(el => el.style.display = 'none');
+      }
+    }
+
+    function getStorageData() {
+      try {
+        return JSON.parse(localStorage.getItem(DB_KEY)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function setStorageData(data) {
+      localStorage.setItem(DB_KEY, JSON.stringify(data));
+    }
+
+    function loadDateData() {
+      const dateKey = document.getElementById('selectedDate').value;
+      const db = getStorageData();
+      const dayData = db[dateKey] || { items: {}, other: 0, memo: '', media: [] };
+
+      document.querySelectorAll('.item-row').forEach(row => {
+        const name = row.getAttribute('data-name');
+        const countSpan = row.querySelector('.item-count');
+        const priceInput = row.querySelector('.item-price');
+        
+        if (dayData.items && dayData.items[name]) {
+          countSpan.innerText = dayData.items[name].count || 0;
+          if (dayData.items[name].price) priceInput.value = dayData.items[name].price;
+        } else {
+          countSpan.innerText = '0';
+        }
+      });
+
+      document.getElementById('otherAmount').value = dayData.other || '';
+      document.getElementById('dailyMemo').value = dayData.memo || '';
+      loadedMedia = dayData.media || [];
+      renderMediaPreviews();
+      calculateTotals();
+    }
+
     function updateCount(btn, delta) {
-      if (currentRole === 'staff') return;
-      const countEl = btn.parentElement.querySelector('.item-count');
-      let val = parseInt(countEl.innerText) || 0;
-      val = Math.max(0, val + delta);
-      countEl.innerText = val;
+      if (currentRole !== 'admin') return;
+      const row = btn.closest('.item-row');
+      const countSpan = row.querySelector('.item-count');
+      let current = parseInt(countSpan.innerText) || 0;
+      current = Math.max(0, current + delta);
+      countSpan.innerText = current;
       calculateTotals();
       saveCurrentData();
     }
 
     function calculateTotals() {
-      let sedanCnt = 0, sedanAmt = 0;
+      let sedanCount = 0, sedanAmt = 0;
+      let rvCount = 0, rvAmt = 0;
+
       document.querySelectorAll('#sedanContainer .item-row').forEach(row => {
-        const cnt = parseInt(row.querySelector('.item-count').innerText) || 0;
+        const count = parseInt(row.querySelector('.item-count').innerText) || 0;
         const price = parseInt(row.querySelector('.item-price').value) || 0;
-        sedanCnt += cnt;
-        sedanAmt += (cnt * price);
+        sedanCount += count;
+        sedanAmt += count * price;
       });
 
-      let rvCnt = 0, rvAmt = 0;
       document.querySelectorAll('#rvContainer .item-row').forEach(row => {
-        const cnt = parseInt(row.querySelector('.item-count').innerText) || 0;
+        const count = parseInt(row.querySelector('.item-count').innerText) || 0;
         const price = parseInt(row.querySelector('.item-price').value) || 0;
-        rvCnt += cnt;
-        rvAmt += (cnt * price);
+        rvCount += count;
+        rvAmt += count * price;
       });
 
       const otherAmt = parseInt(document.getElementById('otherAmount').value) || 0;
-      const totalCnt = sedanCnt + rvCnt;
+      const totalCount = sedanCount + rvCount;
       const totalAmt = sedanAmt + rvAmt + otherAmt;
 
-      document.getElementById('summarySedanCount').innerText = sedanCnt;
+      document.getElementById('summarySedanCount').innerText = sedanCount;
       document.getElementById('summarySedanAmount').innerText = sedanAmt.toLocaleString() + '원';
-      document.getElementById('summaryRvCount').innerText = rvCnt;
+      document.getElementById('summaryRvCount').innerText = rvCount;
       document.getElementById('summaryRvAmount').innerText = rvAmt.toLocaleString() + '원';
       document.getElementById('summaryOtherAmount').innerText = otherAmt.toLocaleString() + '원';
-      document.getElementById('summaryTotalCount').innerText = totalCnt;
+      document.getElementById('summaryTotalCount').innerText = totalCount;
       document.getElementById('summaryTotalAmount').innerText = totalAmt.toLocaleString() + '원';
     }
 
     function saveCurrentData(showAlert = false) {
-      if (currentRole === 'staff') return;
-
+      if (currentRole !== 'admin') return;
       const dateKey = document.getElementById('selectedDate').value;
-      const db = JSON.parse(localStorage.getItem(DB_KEY) || '{}');
+      if (!dateKey) return;
 
-      const sedanData = [];
-      document.querySelectorAll('#sedanContainer .item-row').forEach(row => {
-        sedanData.push({
-          name: row.getAttribute('data-name'),
-          price: parseInt(row.querySelector('.item-price').value) || 0,
-          count: parseInt(row.querySelector('.item-count').innerText) || 0
-        });
+      const db = getStorageData();
+      const itemsData = {};
+
+      document.querySelectorAll('.item-row').forEach(row => {
+        const name = row.getAttribute('data-name');
+        const count = parseInt(row.querySelector('.item-count').innerText) || 0;
+        const price = parseInt(row.querySelector('.item-price').value) || 0;
+        itemsData[name] = { count, price };
       });
 
-      const rvData = [];
-      document.querySelectorAll('#rvContainer .item-row').forEach(row => {
-        rvData.push({
-          name: row.getAttribute('data-name'),
-          price: parseInt(row.querySelector('.item-price').value) || 0,
-          count: parseInt(row.querySelector('.item-count').innerText) || 0
-        });
+      const other = parseInt(document.getElementById('otherAmount').value) || 0;
+      const memo = document.getElementById('dailyMemo').value;
+
+      let sedanAmt = 0, rvAmt = 0;
+      let sedanCount = 0, rvCount = 0;
+
+      Object.keys(itemsData).forEach(k => {
+        if (k.includes('승용')) {
+          sedanAmt += itemsData[k].count * itemsData[k].price;
+          sedanCount += itemsData[k].count;
+        }
+        if (k.includes('RV')) {
+          rvAmt += itemsData[k].count * itemsData[k].price;
+          rvCount += itemsData[k].count;
+        }
       });
+      const totalAmount = sedanAmt + rvAmt + other;
+      const totalCount = sedanCount + rvCount;
 
       db[dateKey] = {
-        sedan: sedanData,
-        rv: rvData,
-        otherAmount: parseInt(document.getElementById('otherAmount').value) || 0,
-        memo: document.getElementById('dailyMemo').value,
-        media: loadedMedia
+        items: itemsData,
+        other,
+        memo,
+        media: loadedMedia,
+        sedanCount,
+        rvCount,
+        totalCount,
+        totalAmount
       };
 
-      localStorage.setItem(DB_KEY, JSON.stringify(db));
-      if (showAlert) alert('오늘 기록이 안전하게 저장되었습니다!');
-    }
-
-    function loadDateData() {
-      const dateKey = document.getElementById('selectedDate').value;
-      const db = JSON.parse(localStorage.getItem(DB_KEY) || '{}');
-      const data = db[dateKey];
-
-      if (!data) {
-        document.querySelectorAll('.item-count').forEach(el => el.innerText = '0');
-        document.getElementById('otherAmount').value = '';
-        document.getElementById('dailyMemo').value = '';
-        loadedMedia = [];
-        renderMediaPreview();
-        calculateTotals();
-        return;
-      }
-
-      if (data.sedan) {
-        const rows = document.querySelectorAll('#sedanContainer .item-row');
-        data.sedan.forEach((item, idx) => {
-          if (rows[idx]) {
-            rows[idx].querySelector('.item-price').value = item.price;
-            rows[idx].querySelector('.item-count').innerText = item.count;
-          }
-        });
-      }
-
-      if (data.rv) {
-        const rows = document.querySelectorAll('#rvContainer .item-row');
-        data.rv.forEach((item, idx) => {
-          if (rows[idx]) {
-            rows[idx].querySelector('.item-price').value = item.price;
-            rows[idx].querySelector('.item-count').innerText = item.count;
-          }
-        });
-      }
-
-      document.getElementById('otherAmount').value = data.otherAmount || '';
-      document.getElementById('dailyMemo').value = data.memo || '';
-      loadedMedia = data.media || [];
-      renderMediaPreview();
-      calculateTotals();
+      setStorageData(db);
+      if (showAlert) alert('정상적으로 저장되었습니다.');
     }
 
     function handleMediaUpload(event) {
       const files = event.target.files;
-      if (!files.length) return;
+      if (!files || files.length === 0) return;
 
       Array.from(files).forEach(file => {
         const reader = new FileReader();
         reader.onload = function(e) {
-          loadedMedia.push({
-            type: file.type.startsWith('video') ? 'video' : 'image',
-            src: e.target.result
-          });
-          renderMediaPreview();
+          loadedMedia.push({ type: file.type.includes('video') ? 'video' : 'image', src: e.target.result });
+          renderMediaPreviews();
           saveCurrentData();
         };
         reader.readAsDataURL(file);
       });
     }
 
-    function renderMediaPreview() {
-      const container = document.getElementById('mediaPreviewList');
-      container.innerHTML = '';
+    function renderMediaPreviews() {
+      const listContainer = document.getElementById('mediaPreviewList');
+      listContainer.innerHTML = '';
 
       if (loadedMedia.length === 0) {
-        container.innerHTML = '<div class="text-xs text-gray-400 self-center mx-auto" id="noMediaText">첨부된 미디어가 없습니다.</div>';
+        listContainer.innerHTML = '<div class="text-xs text-gray-400 self-center mx-auto" id="noMediaText">첨부된 미디어가 없습니다.</div>';
         return;
       }
 
       loadedMedia.forEach((m, idx) => {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'relative flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden border border-gray-200 bg-black';
-
-        if (m.type === 'image') {
-          wrapper.innerHTML = `<img src="${m.src}" class="w-full h-full object-cover">`;
+        const div = document.createElement('div');
+        div.className = 'relative w-14 h-14 rounded-lg overflow-hidden border border-gray-200 flex-shrink-0 bg-black';
+        if (m.type === 'video') {
+          div.innerHTML = `<video src="${m.src}" class="w-full h-full object-cover"></video><div class="absolute inset-0 flex items-center justify-center bg-black/30 text-white text-xs"><i class="fa-solid fa-play"></i></div>`;
         } else {
-          wrapper.innerHTML = `<video src="${m.src}" class="w-full h-full object-cover"></video><div class="absolute inset-0 flex items-center justify-center bg-black/30"><i class="fa-solid fa-play text-white text-xs"></i></div>`;
+          div.innerHTML = `<img src="${m.src}" class="w-full h-full object-cover">`;
         }
-
+        
         if (currentRole === 'admin') {
           const delBtn = document.createElement('button');
-          delBtn.className = 'absolute top-0 right-0 bg-red-600 text-white w-4 h-4 text-[10px] flex items-center justify-center rounded-bl';
-          delBtn.innerText = '×';
-          delBtn.onclick = (e) => {
-            e.stopPropagation();
+          delBtn.className = 'absolute top-0.5 right-0.5 bg-red-600 text-white rounded-full w-4 h-4 text-[10px] flex items-center justify-center shadow';
+          delBtn.innerHTML = '×';
+          delBtn.onclick = () => {
             loadedMedia.splice(idx, 1);
-            renderMediaPreview();
+            renderMediaPreviews();
             saveCurrentData();
           };
-          wrapper.appendChild(delBtn);
+          div.appendChild(delBtn);
         }
-        container.appendChild(wrapper);
+        listContainer.appendChild(div);
       });
     }
 
     function openStatsModal() {
-      renderStats();
       document.getElementById('statsModal').classList.remove('hidden');
+      renderStats();
     }
 
     function closeStatsModal() {
@@ -891,42 +616,35 @@
       const dailyBtn = document.getElementById('viewDailyBtn');
       const monthlyBtn = document.getElementById('viewMonthlyBtn');
       const calendarBtn = document.getElementById('viewCalendarBtn');
-
       const dateFilterSec = document.getElementById('dateFilterSection');
       const calendarFilterSec = document.getElementById('calendarFilterSection');
-      const summaryCardBox = document.getElementById('summaryCardBox');
-      const chartContainerBox = document.getElementById('chartContainerBox');
-      const calendarViewContainer = document.getElementById('calendarViewContainer');
-      const historyCardList = document.getElementById('historyCardList');
+      const calendarContainer = document.getElementById('calendarViewContainer');
+      const chartContainer = document.getElementById('chartContainerBox');
 
-      [dailyBtn, monthlyBtn, calendarBtn].forEach(btn => {
-        btn.className = 'py-1.5 text-xs font-bold rounded-md transition text-gray-500 hover:text-gray-800';
-      });
+      dailyBtn.className = 'py-1.5 text-xs font-bold rounded-md transition text-gray-500 hover:text-gray-800';
+      monthlyBtn.className = 'py-1.5 text-xs font-bold rounded-md transition text-gray-500 hover:text-gray-800';
+      calendarBtn.className = 'py-1.5 text-xs font-bold rounded-md transition text-gray-500 hover:text-gray-800';
 
       if (view === 'daily') {
         dailyBtn.className = 'py-1.5 text-xs font-bold rounded-md transition bg-white shadow text-blue-600';
         dateFilterSec.classList.remove('hidden');
         calendarFilterSec.classList.add('hidden');
-        summaryCardBox.classList.remove('hidden');
-        chartContainerBox.classList.remove('hidden');
-        calendarViewContainer.classList.add('hidden');
-        historyCardList.classList.remove('hidden');
+        calendarContainer.classList.add('hidden');
+        chartContainer.classList.remove('hidden');
+        document.getElementById('chartTitle').innerText = '일별 매출 추이 및 총 세차 대수 그래프';
       } else if (view === 'monthly') {
         monthlyBtn.className = 'py-1.5 text-xs font-bold rounded-md transition bg-white shadow text-blue-600';
         dateFilterSec.classList.remove('hidden');
         calendarFilterSec.classList.add('hidden');
-        summaryCardBox.classList.remove('hidden');
-        chartContainerBox.classList.remove('hidden');
-        calendarViewContainer.classList.add('hidden');
-        historyCardList.classList.remove('hidden');
+        calendarContainer.classList.add('hidden');
+        chartContainer.classList.remove('hidden');
+        document.getElementById('chartTitle').innerText = '월별 매출 추이 및 총 세차 대수 그래프';
       } else if (view === 'calendar') {
         calendarBtn.className = 'py-1.5 text-xs font-bold rounded-md transition bg-white shadow text-blue-600';
         dateFilterSec.classList.add('hidden');
         calendarFilterSec.classList.remove('hidden');
-        summaryCardBox.classList.add('hidden');
-        chartContainerBox.classList.add('hidden');
-        calendarViewContainer.classList.remove('hidden');
-        historyCardList.classList.add('hidden');
+        calendarContainer.classList.remove('hidden');
+        chartContainer.classList.add('hidden');
       }
       renderStats();
     }
@@ -936,285 +654,286 @@
       renderStats();
     }
 
+    function getCountsFromInfo(info) {
+      let sCount = info.sedanCount || 0;
+      let rCount = info.rvCount || 0;
+
+      if (!info.sedanCount && !info.rvCount && info.items) {
+        Object.keys(info.items).forEach(name => {
+          if (name.includes('승용')) sCount += info.items[name].count || 0;
+          if (name.includes('RV')) rCount += info.items[name].count || 0;
+        });
+      }
+      return { sedanCount: sCount, rvCount: rCount };
+    }
+
     function renderStats() {
-      const db = JSON.parse(localStorage.getItem(DB_KEY) || '{}');
+      const db = getStorageData();
+      const historyList = document.getElementById('historyCardList');
+      historyList.innerHTML = '';
+
+      let filteredDates = [];
+      let totalCountSum = 0;
+      let totalAmountSum = 0;
+      let chartLabels = [];
+      let chartSalesValues = [];
+      let chartCountValues = [];
 
       if (currentStatsView === 'calendar') {
-        renderCalendarView(db);
+        const year = calendarCurrentDate.getFullYear();
+        const month = calendarCurrentDate.getMonth();
+        document.getElementById('calendarMonthTitle').innerText = `${year}년 ${month + 1}월`;
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const lastDate = new Date(year, month + 1, 0).getDate();
+        const calendarGrid = document.getElementById('calendarGrid');
+        calendarGrid.innerHTML = '';
+
+        for (let i = 0; i < firstDay; i++) {
+          calendarGrid.innerHTML += `<div></div>`;
+        }
+
+        for (let d = 1; d <= lastDate; d++) {
+          const mStr = String(month + 1).padStart(2, '0');
+          const dStr = String(d).padStart(2, '0');
+          const dateKey = `${year}-${mStr}-${dStr}`;
+          const dayInfo = db[dateKey];
+          const count = dayInfo ? (dayInfo.totalCount || 0) : 0;
+          const amt = dayInfo ? (dayInfo.totalAmount || 0) : 0;
+          const memoText = dayInfo && dayInfo.memo ? dayInfo.memo.trim() : '';
+
+          if (dayInfo) {
+            totalCountSum += count;
+            totalAmountSum += amt;
+          }
+
+          const cell = document.createElement('div');
+          cell.className = `p-1.5 rounded-lg border text-left flex flex-col justify-between h-20 text-[10px] ${dayInfo ? 'bg-blue-50/60 border-blue-200' : 'bg-white border-gray-100'}`;
+          if (memoText) {
+            cell.title = `[메모] ${memoText}`;
+          }
+
+          let memoHtml = '';
+          if (memoText) {
+            memoHtml = `<div class="mt-0.5 text-[9px] text-amber-700 bg-amber-50 rounded px-1 py-0.5 border border-amber-200/60 truncate font-normal" title="${memoText}"><i class="fa-solid fa-comment-dots text-[8px] mr-0.5"></i>${memoText}</div>`;
+          }
+
+          cell.innerHTML = `
+            <div>
+              <div class="font-bold text-gray-700 flex justify-between items-center">
+                <span>${d}</span>
+                ${memoText ? '<i class="fa-solid fa-note-sticky text-amber-500 text-[9px]"></i>' : ''}
+              </div>
+              ${memoHtml}
+            </div>
+            <div>
+              <div class="font-extrabold text-blue-600">${count > 0 ? count + '대' : ''}</div>
+              <div class="font-bold text-emerald-600">${amt > 0 ? (amt/10000).toFixed(1) + '만' : ''}</div>
+            </div>
+          `;
+          calendarGrid.appendChild(cell);
+        }
+
+        document.getElementById('filterTotalCount').innerText = totalCountSum + ' 대';
+        document.getElementById('filterTotalAmount').innerText = totalAmountSum.toLocaleString() + ' 원';
         return;
       }
 
-      const container = document.getElementById('historyCardList');
-      container.innerHTML = '';
+      // 일별 / 월별 분석 로직
+      const startDate = document.getElementById('startDate').value;
+      const endDate = document.getElementById('endDate').value;
 
-      const start = document.getElementById('startDate').value;
-      const end = document.getElementById('endDate').value;
-
+      const sortedKeys = Object.keys(db).sort();
+      
       if (currentStatsView === 'daily') {
-        document.getElementById('chartTitle').innerText = '일별 매출 추이 그래프';
-        document.getElementById('filterCountLabel').innerText = '선택 기간 총 세차 대수';
+        filteredDates = sortedKeys.filter(k => (!startDate || k >= startDate) && (!endDate || k <= endDate));
 
-        const dates = Object.keys(db).sort().reverse().filter(d => d >= start && d <= end);
-        let totalCnt = 0;
-        let totalAmt = 0;
-        let chartDates = [];
-        let chartAmounts = [];
+        filteredDates.forEach(dateKey => {
+          const info = db[dateKey];
+          const { sedanCount, rvCount } = getCountsFromInfo(info);
+          
+          totalCountSum += (info.totalCount || 0);
+          totalAmountSum += (info.totalAmount || 0);
+          
+          chartLabels.push(dateKey);
+          chartSalesValues.push(info.totalAmount || 0);
+          chartCountValues.push(info.totalCount || 0);
 
-        if (dates.length === 0) {
-          container.innerHTML = '<div class="text-center py-6 text-gray-400 text-xs">해당 기간의 데이터가 없습니다.</div>';
-          document.getElementById('filterTotalCount').innerText = '0 대';
-          document.getElementById('filterTotalAmount').innerText = '0 원';
-          updateChart([], [], []);
-          return;
-        }
-
-        const sortedDatesForChart = [...dates].sort();
-        sortedDatesForChart.forEach(date => {
-          const item = db[date];
-          let sCnt = 0, sAmt = 0;
-          (item.sedan || []).forEach(s => { sCnt += s.count; sAmt += (s.count * s.price); });
-          let rCnt = 0, rAmt = 0;
-          (item.rv || []).forEach(r => { rCnt += r.count; rAmt += (r.count * r.price); });
-          const oAmt = item.otherAmount || 0;
-          chartDates.push(date.substring(5));
-          chartAmounts.push(sAmt + rAmt + oAmt);
+          appendHistoryCard(dateKey, info, sedanCount, rvCount);
         });
-
-        dates.forEach(date => {
-          const item = db[date];
-          let sCnt = 0, sAmt = 0;
-          (item.sedan || []).forEach(s => { sCnt += s.count; sAmt += (s.count * s.price); });
-          let rCnt = 0, rAmt = 0;
-          (item.rv || []).forEach(r => { rCnt += r.count; rAmt += (r.count * r.price); });
-          const oAmt = item.otherAmount || 0;
-          const sumCnt = sCnt + rCnt;
-          const sumAmt = sAmt + rAmt + oAmt;
-
-          totalCnt += sumCnt;
-          totalAmt += sumAmt;
-
-          const card = document.createElement('div');
-          card.className = 'bg-white p-3 rounded-xl border border-gray-200 shadow-sm space-y-1.5 text-xs';
-          card.innerHTML = `
-            <div class="flex justify-between items-center border-b pb-1.5">
-              <span class="font-extrabold text-sm text-gray-800">${date}</span>
-              <span class="font-bold text-sm text-emerald-600">${sumAmt.toLocaleString()}원</span>
-            </div>
-            <div class="text-gray-600">승용 ${sCnt}대 / RV ${rCnt}대 (총 ${sumCnt}대) ${oAmt > 0 ? `/ 기타 ${oAmt.toLocaleString()}원` : ''}</div>
-            ${item.memo ? `<div class="bg-gray-50 p-1.5 rounded text-gray-500">📝 ${item.memo}</div>` : ''}
-          `;
-          container.appendChild(card);
-        });
-
-        document.getElementById('filterTotalCount').innerText = totalCnt + ' 대';
-        document.getElementById('filterTotalAmount').innerText = totalAmt.toLocaleString() + ' 원';
-        updateChart(chartDates, chartAmounts, []);
-
-      } else if (currentStatsView === 'monthly') {
-        document.getElementById('chartTitle').innerText = '월별 매출 및 대수 비교 그래프';
-        document.getElementById('filterCountLabel').innerText = '선택 기간 총 세차 대수 (월별 합산)';
-
+      } else {
+        // 월별 집계
         const monthlyMap = {};
-        Object.keys(db).sort().forEach(date => {
-          const monthKey = date.substring(0, 7);
-          if (monthKey >= start.substring(0, 7) && monthKey <= end.substring(0, 7)) {
+        sortedKeys.forEach(k => {
+          const monthKey = k.substring(0, 7); // YYYY-MM
+          if ((!startDate || monthKey >= startDate.substring(0, 7)) && (!endDate || monthKey <= endDate.substring(0, 7))) {
             if (!monthlyMap[monthKey]) {
-              monthlyMap[monthKey] = { count: 0, amount: 0 };
+              monthlyMap[monthKey] = { totalCount: 0, totalAmount: 0, sedanCount: 0, rvCount: 0 };
             }
-            const item = db[date];
-            let sCnt = 0, sAmt = 0;
-            (item.sedan || []).forEach(s => { sCnt += s.count; sAmt += (s.count * s.price); });
-            let rCnt = 0, rAmt = 0;
-            (item.rv || []).forEach(r => { rCnt += r.count; rAmt += (r.count * r.price); });
-            const oAmt = item.otherAmount || 0;
+            const info = db[k];
+            const { sedanCount, rvCount } = getCountsFromInfo(info);
 
-            monthlyMap[monthKey].count += (sCnt + rCnt);
-            monthlyMap[monthKey].amount += (sAmt + rAmt + oAmt);
+            monthlyMap[monthKey].totalCount += (info.totalCount || 0);
+            monthlyMap[monthKey].totalAmount += (info.totalAmount || 0);
+            monthlyMap[monthKey].sedanCount += sedanCount;
+            monthlyMap[monthKey].rvCount += rvCount;
           }
         });
 
-        const months = Object.keys(monthlyMap).sort().reverse();
-        let totalPeriodCnt = 0;
-        let totalPeriodAmt = 0;
-        let chartLabels = [];
-        let chartAmounts = [];
-        let chartCounts = [];
+        Object.keys(monthlyMap).sort().forEach(mKey => {
+          const mInfo = monthlyMap[mKey];
+          totalCountSum += mInfo.totalCount;
+          totalAmountSum += mInfo.totalAmount;
+          
+          chartLabels.push(mKey);
+          chartSalesValues.push(mInfo.totalAmount);
+          chartCountValues.push(mInfo.totalCount);
 
-        if (months.length === 0) {
-          container.innerHTML = '<div class="text-center py-6 text-gray-400 text-xs">해당 기간의 월별 데이터가 없습니다.</div>';
-          document.getElementById('filterTotalCount').innerText = '0 대';
-          document.getElementById('filterTotalAmount').innerText = '0 원';
-          updateChart([], [], [], true);
-          return;
-        }
-
-        [...months].sort().forEach(m => {
-          chartLabels.push(m);
-          chartAmounts.push(monthlyMap[m].amount);
-          chartCounts.push(monthlyMap[m].count);
+          appendMonthlyHistoryCard(mKey, mInfo);
         });
-
-        months.forEach(m => {
-          const data = monthlyMap[m];
-          totalPeriodCnt += data.count;
-          totalPeriodAmt += data.amount;
-
-          const card = document.createElement('div');
-          card.className = 'bg-white p-3 rounded-xl border border-gray-200 shadow-sm flex justify-between items-center text-xs';
-          card.innerHTML = `
-            <div>
-              <div class="font-extrabold text-sm text-gray-800">${m} 월</div>
-              <div class="text-gray-500 mt-0.5">총 세차 대수: <span class="font-bold text-blue-600">${data.count}대</span></div>
-            </div>
-            <div class="text-right">
-              <div class="font-black text-sm text-emerald-600">${data.amount.toLocaleString()}원</div>
-            </div>
-          `;
-          container.appendChild(card);
-        });
-
-        document.getElementById('filterTotalCount').innerText = totalPeriodCnt + ' 대';
-        document.getElementById('filterTotalAmount').innerText = totalPeriodAmt.toLocaleString() + ' 원';
-        updateChart(chartLabels, chartAmounts, chartCounts, true);
       }
+
+      document.getElementById('filterTotalCount').innerText = totalCountSum + ' 대';
+      document.getElementById('filterTotalAmount').innerText = totalAmountSum.toLocaleString() + ' 원';
+
+      renderSalesChart(chartLabels, chartSalesValues, chartCountValues);
     }
 
-    function renderCalendarView(db) {
-      const year = calendarCurrentDate.getFullYear();
-      const month = calendarCurrentDate.getMonth();
-      document.getElementById('calendarMonthTitle').innerText = `${year}년 ${month + 1}월`;
-
-      const firstDay = new Date(year, month, 1).getDay();
-      const lastDate = new Date(year, month + 1, 0).getDate();
-
-      const grid = document.getElementById('calendarGrid');
-      grid.innerHTML = '';
-
-      for (let i = 0; i < firstDay; i++) {
-        grid.appendChild(document.createElement('div'));
+    function appendHistoryCard(dateKey, info, sedanCount, rvCount) {
+      const historyList = document.getElementById('historyCardList');
+      const card = document.createElement('div');
+      card.className = 'bg-white p-3 rounded-xl border border-gray-200 shadow-sm space-y-1.5 text-xs';
+      
+      let mediaHtml = '';
+      if (info.media && info.media.length > 0) {
+        mediaHtml = `<div class="flex gap-1 overflow-x-auto pt-1">${info.media.map(m => m.type === 'video' ? '<div class="w-8 h-8 bg-black rounded flex items-center justify-center text-white text-[10px]"><i class="fa-solid fa-play"></i></div>' : `<img src="${m.src}" class="w-8 h-8 object-cover rounded">`).join('')}</div>`;
       }
 
-      for (let d = 1; d <= lastDate; d++) {
-        const mm = String(month + 1).padStart(2, '0');
-        const dd = String(d).padStart(2, '0');
-        const dateStr = `${year}-${mm}-${dd}`;
+      card.innerHTML = `
+        <div class="flex justify-between items-center font-bold text-gray-800 border-b pb-1.5">
+          <span>${dateKey}</span>
+          <span class="text-blue-600">총 ${info.totalCount || 0}대 / <span class="text-emerald-600">${(info.totalAmount || 0).toLocaleString()}원</span></span>
+        </div>
+        <div class="flex items-center gap-2 pt-0.5 font-medium text-gray-600">
+          <span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded border border-blue-100">🚘 승용 ${sedanCount}대</span>
+          <span class="bg-purple-50 text-purple-700 px-2 py-0.5 rounded border border-purple-100">🛻 RV ${rvCount}대</span>
+        </div>
+        <div class="text-gray-500 pt-0.5">${info.memo ? '메모: ' + info.memo : '작성된 메모가 없습니다.'}</div>
+        ${mediaHtml}
+      `;
+      historyList.appendChild(card);
+    }
 
-        const dayBox = document.createElement('div');
-        dayBox.className = 'h-16 border rounded-lg p-1 flex flex-col justify-between cursor-pointer hover:bg-blue-50 transition bg-white';
-        dayBox.onclick = () => {
-          document.getElementById('selectedDate').value = dateStr;
-          loadDateData();
-          closeStatsModal();
-        };
-
-        const dayData = db[dateStr];
-        let totalCnt = 0;
-        let totalAmt = 0;
-
-        if (dayData) {
-          let sAmt = 0;
-          (dayData.sedan || []).forEach(s => { totalCnt += s.count; sAmt += (s.count * s.price); });
-          let rAmt = 0;
-          (dayData.rv || []).forEach(r => { totalCnt += r.count; rAmt += (r.count * r.price); });
-          totalAmt = sAmt + rAmt + (dayData.otherAmount || 0);
-        }
-
-        dayBox.innerHTML = `
-          <div class="text-[11px] font-bold text-gray-700 text-left">${d}</div>
-          <div class="flex flex-col items-center justify-center flex-1">
-            ${totalCnt > 0 ? `
-              <div class="text-[10px] font-bold text-blue-600">${totalCnt}대</div>
-              <div class="text-[9px] font-semibold text-emerald-600">${totalAmt.toLocaleString()}</div>
-            ` : `<span class="text-[9px] text-gray-300">-</span>`}
+    function appendMonthlyHistoryCard(monthKey, mInfo) {
+      const historyList = document.getElementById('historyCardList');
+      const card = document.createElement('div');
+      card.className = 'bg-white p-3 rounded-xl border border-gray-200 shadow-sm space-y-1.5 text-xs';
+      card.innerHTML = `
+        <div class="flex justify-between items-center font-bold text-gray-800 border-b pb-1.5">
+          <span class="text-sm">${monthKey} 월별 집계</span>
+          <span class="text-emerald-600 font-extrabold text-sm">${mInfo.totalAmount.toLocaleString()} 원</span>
+        </div>
+        <div class="flex justify-between items-center pt-0.5">
+          <div class="flex items-center gap-2 font-medium">
+            <span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded border border-blue-100">🚘 승용 ${mInfo.sedanCount}대</span>
+            <span class="bg-purple-50 text-purple-700 px-2 py-0.5 rounded border border-purple-100">🛻 RV ${mInfo.rvCount}대</span>
           </div>
-        `;
-        grid.appendChild(dayBox);
-      }
+          <div class="text-blue-600 font-extrabold">총 ${mInfo.totalCount} 대</div>
+        </div>
+      `;
+      historyList.appendChild(card);
     }
 
-    function updateChart(labels, amounts, counts, isMonthly = false) {
+    function renderSalesChart(labels, salesData, countData) {
       const ctx = document.getElementById('salesChart').getContext('2d');
       if (salesChartInst) salesChartInst.destroy();
 
-      if (!isMonthly) {
-        salesChartInst = new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: '일별 매출액(원)',
-              data: amounts,
-              borderColor: '#3b82f6',
-              backgroundColor: 'rgba(59, 130, 246, 0.1)',
-              fill: true,
-              tension: 0.2
-            }]
+      salesChartInst = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: '매출액 (원)',
+              data: salesData,
+              backgroundColor: 'rgba(37, 99, 235, 0.4)',
+              borderColor: '#2563eb',
+              borderWidth: 1,
+              yAxisID: 'ySales'
+            },
+            {
+              label: '총 세차 대수 (대)',
+              data: countData,
+              type: 'line',
+              borderColor: '#f59e0b',
+              backgroundColor: '#f59e0b',
+              borderWidth: 2,
+              pointRadius: 3,
+              fill: false,
+              yAxisID: 'yCount'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false,
           },
-          options: { responsive: true, maintainAspectRatio: false }
-        });
-      } else {
-        salesChartInst = new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: labels,
-            datasets: [
-              {
-                label: '월별 매출액(원)',
-                data: amounts,
-                backgroundColor: 'rgba(59, 130, 246, 0.7)',
-                yAxisID: 'y'
-              },
-              {
-                label: '총 세차 대수(대)',
-                data: counts,
-                type: 'line',
-                borderColor: '#10b981',
-                backgroundColor: '#10b981',
-                yAxisID: 'y1',
-                tension: 0.2
-              }
-            ]
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              labels: { boxWidth: 12, font: { size: 10 } }
+            }
           },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: { type: 'linear', display: true, position: 'left' },
-              y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false } }
+          scales: {
+            ySales: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+              beginAtZero: true,
+              title: { display: true, text: '매출(원)', font: { size: 10 } }
+            },
+            yCount: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              beginAtZero: true,
+              grid: { drawOnChartArea: false },
+              title: { display: true, text: '대수(대)', font: { size: 10 } }
             }
           }
-        });
-      }
+        }
+      });
     }
 
     function exportToExcel() {
-      const db = JSON.parse(localStorage.getItem(DB_KEY) || '{}');
-      const rows = [["날짜", "승용차 총대수", "RV 총대수", "기타금액(원)", "총 세차대수", "총 매출액(원)", "메모"]];
+      const db = getStorageData();
+      const excelData = [];
 
-      Object.keys(db).sort().reverse().forEach(date => {
-        const item = db[date];
-        let sCnt = 0, sAmt = 0;
-        (item.sedan || []).forEach(s => { sCnt += s.count; sAmt += (s.count * s.price); });
-        let rCnt = 0, rAmt = 0;
-        (item.rv || []).forEach(r => { rCnt += r.count; rAmt += (r.count * r.price); });
-        const oAmt = item.otherAmount || 0;
+      excelData.push(["날짜", "구분", "항목", "대수/단가", "금액", "기타금액", "총합계", "메모"]);
 
-        rows.push([
-          date,
-          sCnt,
-          rCnt,
-          oAmt,
-          sCnt + rCnt,
-          sAmt + rAmt + oAmt,
-          item.memo || ""
-        ]);
+      Object.keys(db).sort().forEach(dateKey => {
+        const info = db[dateKey];
+        if (info.items) {
+          Object.keys(info.items).forEach(itemName => {
+            const itm = info.items[itemName];
+            if (itm.count > 0) {
+              excelData.push([dateKey, itemName.includes('승용') ? '승용차' : 'RV', itemName, `${itm.count}대 (${itm.price.toLocaleString()}원)`, itm.count * itm.price, info.other || 0, info.totalAmount || 0, info.memo || '']);
+            }
+          });
+        }
       });
 
-      const ws = XLSX.utils.aoa_to_sheet(rows);
+      const ws = XLSX.utils.aoa_to_sheet(excelData);
       const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "진천세차장_매출장부");
-      XLSX.writeFile(wb, `진천골프장세차장_장부_${new Date().toISOString().substring(0,10)}.xlsx`);
+      XLSX.utils.book_append_sheet(wb, ws, "세차장매출");
+      XLSX.writeFile(wb, `진천골프장_세차장_매출_${new Date().toISOString().split('T')[0]}.xlsx`);
     }
+
+    window.onload = initApp;
   </script>
 </body>
 </html>
