@@ -77,21 +77,22 @@
     <div class="max-w-xl mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center space-x-2">
         <i class="fa-solid fa-soap text-blue-400 text-xl"></i>
-        <h1 class="text-lg font-black">기창 골프장 세차장</h1>
-        <span id="roleBadge" class="text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">관리자</span>
+        <h1 class="text-sm font-black">기창 골프장 세차장</h1>
+        <span id="roleBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">관리자</span>
       </div>
       <div class="flex items-center space-x-1.5">
-        <button onclick="openStatsModal()" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-lg border border-slate-700 text-slate-200 transition flex items-center gap-1">
-          <i class="fa-solid fa-chart-line text-blue-400"></i>
+        <!-- 조회 버튼 크게 강조 -->
+        <button onclick="openStatsModal()" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-sm font-bold rounded-lg text-white transition flex items-center gap-1.5 shadow">
+          <i class="fa-solid fa-chart-line text-white"></i>
           <span>조회</span>
         </button>
-        <button onclick="exportToExcel()" class="px-2.5 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold rounded-lg text-white transition flex items-center gap-1 shadow-sm">
+        <button onclick="exportToExcel()" class="px-2.5 py-2 bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold rounded-lg text-white transition flex items-center gap-1 shadow-sm">
           <i class="fa-solid fa-file-excel"></i>
-          <span>엑셀 저장</span>
+          <span>저장</span>
         </button>
-        <label class="px-2.5 py-1.5 bg-amber-600 hover:bg-amber-500 text-xs font-semibold rounded-lg text-white transition flex items-center gap-1 shadow-sm cursor-pointer">
+        <label class="px-2.5 py-2 bg-amber-600 hover:bg-amber-500 text-xs font-semibold rounded-lg text-white transition flex items-center gap-1 shadow-sm cursor-pointer">
           <i class="fa-solid fa-file-arrow-up"></i>
-          <span>엑셀 업로드</span>
+          <span>업로드</span>
           <input type="file" accept=".xlsx, .xls, .csv" class="hidden" onchange="importFromExcel(event)">
         </label>
       </div>
@@ -422,11 +423,11 @@
       
       if (currentRole === 'admin') {
         badge.innerText = '사장님 (관리자)';
-        badge.className = 'text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30';
+        badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30';
         adminElements.forEach(el => el.style.display = '');
       } else {
         badge.innerText = '직원 (보기 전용)';
-        badge.className = 'text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30';
+        badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30';
         adminElements.forEach(el => el.style.display = 'none');
       }
     }
@@ -948,7 +949,6 @@
           const db = getStorageData();
           let importedCount = 0;
 
-          // 첫 번째 행은 헤더이므로 1번 인덱스부터 순회
           for (let i = 1; i < jsonRows.length; i++) {
             const row = jsonRows[i];
             if (!row || row.length === 0) continue;
@@ -956,13 +956,12 @@
             const dateKey = String(row[0] || '').trim();
             if (!dateKey || !dateKey.match(/^\d{4}-\d{2}-\d{2}$/)) continue;
 
-            const category = String(row[1] || ''); // 승용차 또는 RV
-            const itemName = String(row[2] || ''); // 세부 항목명 (예: 승용차, RV 소형 등)
-            const countPriceStr = String(row[3] || ''); // 예: "2대 (10,000원)"
+            const category = String(row[1] || '');
+            const itemName = String(row[2] || '');
+            const countPriceStr = String(row[3] || '');
             const otherAmt = parseInt(row[5]) || 0;
             const memoText = String(row[7] || '');
 
-            // 대수와 단가 파싱
             let count = 0;
             let price = 0;
             const countMatch = countPriceStr.match(/(\d+)대/);
@@ -988,7 +987,6 @@
             importedCount++;
           }
 
-          // 각 날짜별 총합 계산 갱신
           Object.keys(db).forEach(dateKey => {
             const info = db[dateKey];
             let sedanCount = 0, sedanAmt = 0;
@@ -1020,7 +1018,7 @@
           console.error(err);
           alert('엑셀 파일을 읽는 중 오류가 발생했습니다. 올바른 형식의 파일인지 확인해 주세요.');
         } finally {
-          event.target.value = ''; // 파일 input 초기화
+          event.target.value = '';
         }
       };
       reader.readAsArrayBuffer(file);
