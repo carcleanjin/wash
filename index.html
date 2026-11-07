@@ -24,7 +24,7 @@
       <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
         <i class="fa-solid fa-car-wash"></i>
       </div>
-      <h2 class="text-2xl font-extrabold text-gray-800">현기창 진천 세차장</h2>
+      <h2 class="text-2xl font-extrabold text-gray-800 whitespace-nowrap">현기창 진천 골프장</h2>
       <p class="text-sm text-gray-500">사업장 번호와 비밀번호를 입력해 주세요.</p>
       
       <div class="space-y-3 text-left pt-2">
@@ -74,23 +74,24 @@
 
   <!-- 메인 헤더 -->
   <header class="bg-slate-900 text-white sticky top-0 z-30 shadow-md">
-    <div class="max-w-xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center space-x-2">
-        <i class="fa-solid fa-soap text-blue-400 text-xl"></i>
-        <h1 class="text-sm font-black">현기창</h1>
-        <span id="roleBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">관리자</span>
+    <div class="max-w-xl mx-auto px-3 py-3 flex items-center justify-between gap-2">
+      <!-- 타이틀 무조건 가로 유지 및 사장님 문구 제거 -->
+      <div class="flex items-center space-x-1.5 shrink-0">
+        <i class="fa-solid fa-soap text-blue-400 text-lg"></i>
+        <h1 class="text-base font-black whitespace-nowrap">현기창 진천 골프장 세차장</h1>
+        <span id="roleBadge" class="hidden"></span>
       </div>
-      <div class="flex items-center space-x-1.5">
-        <!-- 조회 버튼 크게 강조 -->
-        <button onclick="openStatsModal()" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-sm font-bold rounded-lg text-white transition flex items-center gap-1.5 shadow">
-          <i class="fa-solid fa-chart-line text-white"></i>
+      <!-- 조회, 저장, 업로드 동일한 크기의 사각형 버튼 그룹 -->
+      <div class="flex items-center space-x-1.5 shrink-0">
+        <button onclick="openStatsModal()" class="w-16 h-9 bg-blue-600 hover:bg-blue-500 text-xs font-bold rounded-lg text-white transition flex items-center justify-center gap-1 shadow">
+          <i class="fa-solid fa-chart-line"></i>
           <span>조회</span>
         </button>
-        <button onclick="exportToExcel()" class="px-2.5 py-2 bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold rounded-lg text-white transition flex items-center gap-1 shadow-sm">
+        <button onclick="exportToExcel()" class="w-16 h-9 bg-emerald-700 hover:bg-emerald-600 text-xs font-bold rounded-lg text-white transition flex items-center justify-center gap-1 shadow">
           <i class="fa-solid fa-file-excel"></i>
           <span>저장</span>
         </button>
-        <label class="px-2.5 py-2 bg-amber-600 hover:bg-amber-500 text-xs font-semibold rounded-lg text-white transition flex items-center gap-1 shadow-sm cursor-pointer">
+        <label class="w-16 h-9 bg-amber-600 hover:bg-amber-500 text-xs font-bold rounded-lg text-white transition flex items-center justify-center gap-1 shadow cursor-pointer">
           <i class="fa-solid fa-file-arrow-up"></i>
           <span>업로드</span>
           <input type="file" accept=".xlsx, .xls, .csv" class="hidden" onchange="importFromExcel(event)">
@@ -263,7 +264,7 @@
           </label>
         </div>
 
-        <textarea id="dailyMemo" rows="2" placeholder="예: 날씨등 특이사항 입력..." class="w-full text-sm p-2.5 border rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none resize-none" oninput="saveCurrentData()"></textarea>
+        <textarea id="dailyMemo" rows="2" placeholder="예: 현금 결제 2건, 특이사항 등..." class="w-full text-sm p-2.5 border rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none resize-none" oninput="saveCurrentData()"></textarea>
 
         <!-- 미디어 미리보기 리스트 -->
         <div id="mediaPreviewList" class="flex gap-2 overflow-x-auto py-1 no-scrollbar min-h-[60px]">
@@ -380,7 +381,203 @@
       { vn: "Ăn", mean: "먹다", en: "Eat" },
       { vn: "Uống", mean: "마시다", en: "Drink" },
       { vn: "Đi", mean: "가다", en: "Go" },
-      { vn: "Đến", mean: "오다", en: "Come" }
+      { vn: "Đến", mean: "오다", en: "Come" },
+      { vn: "Làm việc", mean: "일하다", en: "Work" },
+      { vn: "Nghỉ ngơi", mean: "휴식하다", en: "Rest" },
+      { vn: "Mua", mean: "사다", en: "Buy" },
+      { vn: "Bán", mean: "팔다", en: "Sell" },
+      { vn: "Hôm nay", mean: "오늘", en: "Today" },
+      { vn: "Hôm qua", mean: "어제", en: "Yesterday" },
+      { vn: "Ngày mai", mean: "내일", en: "Tomorrow" },
+      { vn: "Bây giờ", mean: "지금", en: "Now" },
+      { vn: "Nhanh", mean: "빠르다", en: "Fast" },
+      { vn: "Chậm", mean: "느리다", en: "Slow" },
+      { vn: "Sạch sẽ", mean: "깨끗하다", en: "Clean" },
+      { vn: "Bẩn", mean: "더럽다", en: "Dirty" },
+      { vn: "To", mean: "크다", en: "Big" },
+      { vn: "Nhỏ", mean: "작다", en: "Small" },
+      { vn: "Nóng", mean: "덥다 / 뜨겁다", en: "Hot" },
+      { vn: "Lạnh", mean: "춥다", en: "Cold" },
+      { vn: "Bạn", mean: "친구", en: "Friend" },
+      { vn: "Tôi", mean: "나 / 저", en: "I / Me" },
+      { vn: "Anh", mean: "형 / 오빠", en: "Older brother" },
+      { vn: "Chị", mean: "누나 / 언니", en: "Older sister" },
+      { vn: "Em", mean: "동생", en: "Younger sibling" },
+      { vn: "Khách hàng", mean: "고객 / 손님", en: "Customer" },
+      { vn: "Nhân viên", mean: "직원", en: "Staff" },
+      { vn: "Chủ quán", mean: "사장님 / 주인", en: "Owner" },
+      { vn: "Sân gôn", mean: "골프장", en: "Golf course" },
+      { vn: "Trợ giúp", mean: "돕다", en: "Help" },
+      { vn: "Hiểu", mean: "이해하다", en: "Understand" },
+      { vn: "Biết", mean: "알다", en: "Know" },
+      { vn: "Màu đen", mean: "검은색", en: "Black color" },
+      { vn: "Màu trắng", mean: "하얀색", en: "White color" },
+      { vn: "Màu đỏ", mean: "빨간색", en: "Red color" },
+      { vn: "Màu xanh", mean: "초록색 / 파란색", en: "Green / Blue" },
+      { vn: "Thời tiết", mean: "날씨", en: "Weather" },
+      { vn: "Mưa", mean: "비", en: "Rain" },
+      { vn: "Nắng", mean: "햇빛 / 맑음", en: "Sunny" },
+      { vn: "Gió", mean: "바람", en: "Wind" },
+      { vn: "Nhà", mean: "집", en: "House" },
+      { vn: "Phòng", mean: "방", en: "Room" },
+      { vn: "Cửa", mean: "문", en: "Door" },
+      { vn: "Bàn", mean: "탁자 / 책상", en: "Table" },
+      { vn: "Ghế", mean: "의자", en: "Chair" },
+      { vn: "Giường", mean: "침대", en: "Bed" },
+      { vn: "Sách", mean: "책", en: "Book" },
+      { vn: "Bút", mean: "펜", en: "Pen" },
+      { vn: "Giấy", mean: "종이", en: "Paper" },
+      { vn: "Điện thoại", mean: "전화기 / 스마트폰", en: "Phone" },
+      { vn: "Máy tính", mean: "컴퓨터", en: "Computer" },
+      { vn: "Đồng hồ", mean: "시계", en: "Clock / Watch" },
+      { vn: "Quần áo", mean: "옷", en: "Clothes" },
+      { vn: "Giày", mean: "신발", en: "Shoes" },
+      { vn: "Mũ", mean: "모자", en: "Hat" },
+      { vn: "Kính", mean: "안경 / 유리", en: "Glasses / Glass" },
+      { vn: "Thành phố", mean: "도시", en: "City" },
+      { vn: "Đường", mean: "길 / 거리 / 설탕", en: "Road / Street / Sugar" },
+      { vn: "Cầu", mean: "다리", en: "Bridge" },
+      { vn: "Xe buýt", mean: "버스", en: "Bus" },
+      { vn: "Tàu hỏa", mean: "기차", en: "Train" },
+      { vn: "Máy bay", mean: "비행기", en: "Airplane" },
+      { vn: "Sân bay", mean: "공항", en: "Airport" },
+      { vn: "Bệnh viện", mean: "병원", en: "Hospital" },
+      { vn: "Nhà hàng", mean: "식당", en: "Restaurant" },
+      { vn: "Khách sạn", mean: "호텔", en: "Hotel" },
+      { vn: "Ngân hàng", mean: "은행", en: "Bank" },
+      { vn: "Siêu thị", mean: "슈퍼마켓", en: "Supermarket" },
+      { vn: "Chợ", mean: "시장", en: "Market" },
+      { vn: "Trường học", mean: "학교", en: "School" },
+      { vn: "Học sinh", mean: "학생", en: "Student" },
+      { vn: "Giáo viên", mean: "교사", en: "Teacher" },
+      { vn: "Bác sĩ", mean: "의사", en: "Doctor" },
+      { vn: "Y tá", mean: "간호사", en: "Nurse" },
+      { vn: "Cảnh sát", mean: "경찰", en: "Police" },
+      { vn: "Lính", mean: "군인", en: "Soldier" },
+      { vn: "Công ty", mean: "회사", en: "Company" },
+      { vn: "Giám đốc", mean: "사장 / 이사", en: "Director / Boss" },
+      { vn: "Đồng nghiệp", mean: "동료", en: "Colleague" },
+      { vn: "Gia đình", mean: "가족", en: "Family" },
+      { vn: "Bố / Cha", mean: "아버지", en: "Father" },
+      { vn: "Mẹ / Má", mean: "어머니", en: "Mother" },
+      { vn: "Con trai", mean: "아들", en: "Son" },
+      { vn: "Con gái", mean: "딸", en: "Daughter" },
+      { vn: "Anh trai", mean: "형 / 오빠", en: "Older brother" },
+      { vn: "Em trai", mean: "남동생", en: "Younger brother" },
+      { vn: "Chị gái", mean: "누나 / 언니", en: "Older sister" },
+      { vn: "Em gái", mean: "여동생", en: "Younger sister" },
+      { vn: "Ông", mean: "할아버지 / 남성 어른", en: "Grandfather / Mr." },
+      { vn: "Bà", mean: "할머니 / 여성 어른", en: "Grandmother / Mrs." },
+      { vn: "Chú", mean: "삼촌", en: "Uncle" },
+      { vn: "Cô", mean: "고모 / 이모 / 여선생님", en: "Aunt / Ms." },
+      { vn: "Thức ăn", mean: "음식", en: "Food" },
+      { vn: "Cơm", mean: "밥", en: "Rice" },
+      { vn: "Thịt", mean: "고기", en: "Meat" },
+      { vn: "Cá", mean: "생선", en: "Fish" },
+      { vn: "Rau", mean: "채소 / 야채", en: "Vegetable" },
+      { vn: "Trái cây", mean: "과일", en: "Fruit" },
+      { vn: "Trứng", mean: "달걀 / 계란", en: "Egg" },
+      { vn: "Sữa", mean: "우유", en: "Milk" },
+      { vn: "Bia", mean: "맥주", en: "Beer" },
+      { vn: "Rượu", mean: "술", en: "Alcohol / Wine" },
+      { vn: "Cà phê", mean: "커피", en: "Coffee" },
+      { vn: "Trà / Chè", mean: "차", en: "Tea" },
+      { vn: "Muối", mean: "소금", en: "Salt" },
+      { vn: "Tiêu", mean: "후추", en: "Pepper" },
+      { vn: "Dầu", mean: "기름", en: "Oil" },
+      { vn: "Bát / Chén", mean: "그릇 / 공기", en: "Bowl" },
+      { vn: "Đũa", mean: "젓가락", en: "Chopsticks" },
+      { vn: "Thìa / Muỗng", mean: "숟가락", en: "Spoon" },
+      { vn: "Dĩa", mean: "포크", en: "Fork" },
+      { vn: "Dao", mean: "칼", en: "Knife" },
+      { vn: "Ly / Cốc", mean: "컵 / 잔", en: "Cup / Glass" },
+      { vn: "Khăn", mean: "수건", en: "Towel / Napkin" },
+      { vn: "Giờ", mean: "시간", en: "Hour" },
+      { vn: "Phút", mean: "분", en: "Minute" },
+      { vn: "Giây", mean: "초", en: "Second" },
+      { vn: "Tuần", mean: "주", en: "Week" },
+      { vn: "Tháng", mean: "달 / 월", en: "Month" },
+      { vn: "Năm", mean: "년 / 나이", en: "Year / Age" },
+      { vn: "Sáng", mean: "아침", en: "Morning" },
+      { vn: "Trưa", mean: "점심", en: "Noon" },
+      { vn: "Chiều", mean: "오후", en: "Afternoon" },
+      { vn: "Tối", mean: "저녁 / 밤", en: "Evening / Night" },
+      { vn: "Đêm", mean: "밤", en: "Night" },
+      { vn: "Hôm kia", mean: "그저께", en: "Day before yesterday" },
+      { vn: "Ngày kia", mean: "모레", en: "Day after tomorrow" },
+      { vn: "Tuần trước", mean: "지난주", en: "Last week" },
+      { vn: "Tuần sau", mean: "다음주", en: "Next week" },
+      { vn: "Tháng trước", mean: "지난달", en: "Last month" },
+      { vn: "Tháng sau", mean: "다음달", en: "Next month" },
+      { vn: "Năm ngoái", mean: "작년", en: "Last year" },
+      { vn: "Năm sau", mean: "내년", en: "Next year" },
+      { vn: "Số", mean: "숫자 / 번호", en: "Number" },
+      { vn: "Một", mean: "1", en: "One" },
+      { vn: "Hai", mean: "2", en: "Two" },
+      { vn: "Ba", mean: "3", en: "Three" },
+      { vn: "Bốn", mean: "4", en: "Four" },
+      { vn: "Sáu", mean: "6", en: "Six" },
+      { vn: "Bảy", mean: "7", en: "Seven" },
+      { vn: "Tám", mean: "8", en: "Eight" },
+      { vn: "Chín", mean: "9", en: "Nine" },
+      { vn: "Mười", mean: "10", en: "Ten" },
+      { vn: "Trăm", mean: "백", en: "Hundred" },
+      { vn: "Nghìn", mean: "천", en: "Thousand" },
+      { vn: "Triệu", mean: "백만", en: "Million" },
+      { vn: "Tỷ", mean: "십억", en: "Billion" },
+      { vn: "Đầu", mean: "머리", en: "Head" },
+      { vn: "Mắt", mean: "눈", en: "Eye" },
+      { vn: "Mũi", mean: "코", en: "Nose" },
+      { vn: "Miệng", mean: "입", en: "Mouth" },
+      { vn: "Tai", mean: "귀", en: "Ear" },
+      { vn: "Tay", mean: "손 / 팔", en: "Hand / Arm" },
+      { vn: "Chân", mean: "발 / 다리", en: "Foot / Leg" },
+      { vn: "Bụng", mean: "배", en: "Belly / Stomach" },
+      { vn: "Lưng", mean: "등", en: "Back" },
+      { vn: "Tim", mean: "심장", en: "Heart" },
+      { vn: "Máu", mean: "피", en: "Blood" },
+      { vn: "Xương", mean: "뼈", en: "Bone" },
+      { vn: "Da", mean: "피부", en: "Skin" },
+      { vn: "Tóc", mean: "머리카락", en: "Hair" },
+      { vn: "Răng", mean: "이 / 치아", en: "Tooth" },
+      { vn: "Lưỡi", mean: "혀", en: "Tongue" },
+      { vn: "Cổ", mean: "목", en: "Neck" },
+      { vn: "Vai", mean: "어깨", en: "Shoulder" },
+      { vn: "Ngực", mean: "가슴", en: "Chest" },
+      { vn: "Đầu gối", mean: "무릎", en: "Knee" },
+      { vn: "Ngón tay", mean: "손가락", en: "Finger" },
+      { vn: "Ngón chân", mean: "발가락", en: "Toe" },
+      { vn: "Móng tay", mean: "손톱", en: "Fingernail" },
+      { vn: "Sức khỏe", mean: "건강", en: "Health" },
+      { vn: "Bệnh", mean: "병 / 질병", en: "Disease / Sick" },
+      { vn: "Đau", mean: "아프다", en: "Painful / Hurt" },
+      { vn: "Thuốc", mean: "약", en: "Medicine" },
+      { vn: "Cấp cứu", mean: "응급", en: "Emergency" },
+      { vn: "Khỏe", mean: "건강하다 / 안녕하다", en: "Healthy" },
+      { vn: "Mệt", mean: "피곤하다", en: "Tired" },
+      { vn: "Buồn", mean: "슬프다", en: "Sad" },
+      { vn: "Vui", mean: "기쁘다", en: "Happy" },
+      { vn: "Giận", mean: "화나다", en: "Angry" },
+      { vn: "Sợ", mean: "무섭다", en: "Scared" },
+      { vn: "Lo lắng", mean: "걱정하다", en: "Worry" },
+      { vn: "Yêu", mean: "사랑하다", en: "Love" },
+      { vn: "Ghét", mean: "싫어하다", en: "Hate" },
+      { vn: "Hỏi", mean: "묻다 / 질문하다", en: "Ask" },
+      { vn: "Trả lời", mean: "대답하다", en: "Answer" },
+      { vn: "Nói", mean: "말하다", en: "Speak / Say" },
+      { vn: "Nghe", mean: "듣다", en: "Listen" },
+      { vn: "Nhìn", mean: "보다", en: "Look" },
+      { vn: "Đọc", mean: "읽다", en: "Read" },
+      { vn: "Viết", mean: "쓰다", en: "Write" },
+      { vn: "Học", mean: "공부하다 / 배우다", en: "Study / Learn" },
+      { vn: "Chơi", mean: "놀다", en: "Play" },
+      { vn: "Ngủ", mean: "자다", en: "Sleep" },
+      { vn: "Thức dậy", mean: "일어나다", en: "Wake up" },
+      { vn: "Tắm", mean: "샤워하다 / 목욕하다", en: "Shower / Bath" },
+      { vn: "Mặc áo", mean: "옷을 입다", en: "Wear clothes" },
+      { vn: "Nấu ăn", mean: "요리하다", en: "Cook" },
+      { vn: "Dọn dẹp", mean: "청소하다", en: "Clean up" },
+      { vn: "Giặt giũ", mean: "빨래하다", en: "Laundry" }
     ];
 
     function initApp() {
@@ -418,16 +615,10 @@
     }
 
     function applyRoleUI() {
-      const badge = document.getElementById('roleBadge');
       const adminElements = document.querySelectorAll('.admin-only');
-      
       if (currentRole === 'admin') {
-        badge.innerText = '사장님 (관리자)';
-        badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30';
         adminElements.forEach(el => el.style.display = '');
       } else {
-        badge.innerText = '직원 (보기 전용)';
-        badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30';
         adminElements.forEach(el => el.style.display = 'none');
       }
     }
